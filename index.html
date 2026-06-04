@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AMAZON トレーニングノート</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh;overscroll-behavior:none}
+:root{--navy:#1e3a5f;--navy2:#2d4f7a;--navy3:#3b6494;--accent:#3b82f6;--green:#10b981;--yellow:#f59e0b;--red:#ef4444;--gray:#6b7280;--light:#f8fafc;--white:#fff;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,.1)}
+#root{padding-bottom:70px}
+.app-header{background:var(--navy);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.app-header h1{font-size:18px;font-weight:700;letter-spacing:.5px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);display:flex;z-index:100;box-shadow:0 -2px 8px rgba(0,0,0,.1)}
+.bottom-nav button{flex:1;padding:6px 2px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--gray);transition:color .2s}
+.bottom-nav button.active{color:var(--accent)}
+.bottom-nav button svg{width:22px;height:22px}
+.page{padding:12px;max-width:600px;margin:0 auto}
+.card{background:var(--white);border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.card-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#dbeafe;color:#1d4ed8;margin-right:4px;margin-bottom:2px}
+.badge.safety{background:#fee2e2;color:#b91c1c}
+.badge.quality{background:#fef3c7;color:#92400e}
+.badge.flow{background:#d1fae5;color:#065f46}
+.badge.people{background:#ede9fe;color:#5b21b6}
+.badge.five-why{background:#fce7f3;color:#9d174d}
+.badge.improvement{background:#e0f2fe;color:#075985}
+btn{display:inline-flex;align-items:center;gap:4px;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#2563eb}
+.btn-navy{background:var(--navy);color:#fff}.btn-navy:hover{background:var(--navy2)}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#059669}
+.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}.btn-outline:hover{background:#f0f4f8}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-danger{background:var(--red);color:#fff}
+.btn-gray{background:#f1f5f9;color:var(--gray);border:1px solid var(--border)}
+.btn-copy{background:#f1f5f9;color:#374151;border:1px solid var(--border);font-size:12px;padding:5px 10px}
+.btn-copy:active{background:#dbeafe}
+input,textarea,select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;background:#fff;color:#1e293b;transition:border-color .2s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:72px}
+label{display:block;font-size:12px;font-weight:600;color:var(--gray);margin-bottom:4px;margin-top:10px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.star-rating{display:flex;gap:4px;margin:4px 0}
+.star{font-size:22px;cursor:pointer;color:#d1d5db;transition:color .1s}
+.star.filled{color:#f59e0b}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat-box{background:var(--white);border-radius:10px;padding:10px;text-align:center;box-shadow:var(--shadow);border:1px solid var(--border)}
+.stat-num{font-size:24px;font-weight:800;color:var(--navy)}
+.stat-label{font-size:11px;color:var(--gray);margin-top:2px}
+.note-card{background:var(--white);border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow);border-left:4px solid var(--accent);border:1px solid var(--border);border-left:4px solid var(--accent)}
+.note-card .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.note-title{font-size:15px;font-weight:700;color:var(--navy)}
+.note-summary{font-size:13px;color:#475569;margin:4px 0}
+.note-phrase{font-size:13px;color:#1e3a5f;background:#eff6ff;padding:6px 10px;border-radius:6px;margin-top:6px;border-left:3px solid var(--accent);font-style:italic}
+.action-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.understanding-bar{display:flex;gap:3px;align-items:center}
+.u-dot{width:10px;height:10px;border-radius:50%;background:#e2e8f0}
+.u-dot.filled{background:var(--accent)}
+.tab-scroll{display:flex;gap:6px;overflow-x:auto;padding:0 0 8px;scrollbar-width:none;margin-bottom:12px}
+.tab-scroll::-webkit-scrollbar{display:none}
+.tab-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--gray)}
+.tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.section-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+details summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--navy2);padding:6px 0;list-style:none;display:flex;align-items:center;gap:4px}
+details summary::before{content:'▶';font-size:10px;transition:transform .2s}
+details[open] summary::before{transform:rotate(90deg)}
+.prompt-box{background:#1e293b;color:#e2e8f0;border-radius:10px;padding:14px;font-size:13px;line-height:1.7;white-space:pre-wrap;word-break:break-all;position:relative;margin-top:8px}
+.copy-float{position:absolute;top:8px;right:8px}
+.alert{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:10px}
+.alert-warning{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.alert-info{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe}
+.alert-success{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}
+.divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+.review-card{background:#fff;border-radius:12px;padding:20px;box-shadow:var(--shadow);text-align:center;border:1px solid var(--border)}
+.review-q{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:16px;line-height:1.5}
+.review-a{background:#f8fafc;border-radius:8px;padding:12px;font-size:14px;color:#374151;text-align:left;line-height:1.6;margin:12px 0}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.modal{background:#fff;border-radius:16px 16px 0 0;padding:20px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:14px}
+.floating-add{position:fixed;bottom:80px;right:16px;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:24px;box-shadow:0 4px 12px rgba(59,130,246,.5);display:flex;align-items:center;justify-content:center;z-index:90}
+.search-box{position:relative;margin-bottom:12px}
+.search-box input{padding-left:36px}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--gray)}
+.empty{text-align:center;padding:32px;color:var(--gray)}
+.empty-icon{font-size:40px;margin-bottom:8px}
+.five-why-step{background:#f8fafc;border-radius:8px;padding:10px 12px;margin-bottom:6px;border-left:3px solid var(--accent)}
+.five-why-step .why-label{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px}
+.action-table{width:100%;border-collapse:collapse;font-size:12px}
+.action-table th{background:var(--navy);color:#fff;padding:6px 8px;text-align:left}
+.action-table td{padding:6px 8px;border:1px solid var(--border);vertical-align:top}
+.action-table tr:nth-child(even) td{background:#f8fafc}
+.loading{text-align:center;padding:20px;color:var(--gray)}
+.tag{display:inline-block;padding:1px 6px;background:#e0f2fe;color:#075985;border-radius:4px;font-size:11px;margin:2px}
+.process-badge{background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600}
+@media(max-width:400px){.stat-grid{grid-template-columns:repeat(3,1fr)}.stat-num{font-size:20px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useCallback,useMemo,useRef} = React;
+
+// ===== CONSTANTS =====
+const CATS = ['Safety','Quality','Flow','People','数字','用語','LP','5Why','ケーススタディ','改善','朝礼','AA共有','PA連携','上司報告','振り返り回答','研修メモ'];
+const PROCESSES = ['Sort','Stow','Pick & Stage','Dispatch','RTS','Problem Solve','その他'];
+const IMPACTS = ['Safety','Quality','Delivery','Productivity','People'];
+const AI_TYPES = ['Amazon社内AI','ChatGPT','Claude','汎用AI'];
+const CONSULT_TYPES = ['現場トラブル相談','Safetyリスク整理','5Why作成','Root Cause整理','Corrective Action作成','Preventive Action作成','LPに紐づけ','振り返り文作成','上司報告文作成','PA/AAへの声かけ作成','研修回答作成','自分の理解チェック'];
+const TONES = ['やさしく','簡潔に','現場リーダー風','注意喚起強め','前向き','研修向け'];
+const TARGETS = ['全体朝礼','AA向け','PA向け','Safety向け','上司向け','新人向け'];
+const LPS = ['Customer Obsession','Ownership','Invent and Simplify','Are Right, A Lot','Learn and Be Curious','Hire and Develop the Best','Insist on the Highest Standards','Think Big','Bias for Action','Frugality','Earn Trust','Dive Deep','Have Backbone; Disagree and Commit','Deliver Results'];
+const PRIVACY_WARNING = `⚠️ 注意：社内AIであっても、入力できる情報の範囲は会社の利用ルールに従ってください。
+
+個人名・顧客情報・荷物番号・詳細すぎる拠点固有情報・社外秘の数値や画面情報は、必要に応じて抽象化してください。
+
+置き換え例：
+• 個人名 → アソシエイトA / PA B
+• 拠点名 → 自拠点
+• 正確な物量 → 通常より多い / 前日より多い
+• 正確な時刻 → 作業前半 / 作業後半 / Dispatch前
+• 荷物番号・顧客情報 → 入力しない
+• 社内画面名 → 管理画面 / 進捗画面`;
+
+// ===== INITIAL SAMPLE DATA =====
+const SAMPLE_NOTES = [
+  {id:'n1',category:'数字',subcat:'Flow',term:'Volume',title:'Volume',summary:'その日に処理する荷物量',fieldMeaning:'DSではSort、Stow、Pick & Stage、Dispatch全体に影響する基準',checkPoints:'Volumeに対してHCは足りているか、Backlogが出ていないか',abnormalResponse:'遅れが出そうなら早めにPA/AMへ共有し、人員配置や優先順位を確認する',usefulPhrase:'今日のVolumeに対してHCと進捗を見ながら、Backlogが出そうな工程を早めに確認します',relatedLP:'Dive Deep,Bias for Action,Ownership',experienceNote:'',understanding:3,nextCheck:'このサイトではVolumeをどの画面・指標で確認しているか',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),favorite:false},
+  {id:'n2',category:'数字',subcat:'Flow',term:'Backlog',title:'Backlog',summary:'未処理で残っている荷物や作業',fieldMeaning:'工程が追いついていない状態を示す重要なサイン',checkPoints:'どの工程でBacklogが増えているか、Dispatchに影響するか',abnormalResponse:'原因が人員不足か、動線か、標準作業の崩れかを現場で確認し、早めにエスカレーションする',usefulPhrase:'Backlogが増えているので、どの工程で詰まりが出ているか現場を確認します',relatedLP:'Dive Deep,Bias for Action',experienceNote:'',understanding:3,nextCheck:'Backlogを確認する画面や基準値を覚える',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),favorite:false},
+  {id:'n3',category:'5Why',subcat:'Safety',term:'5Why',title:'5Why（なぜなぜ分析）',summary:'なぜを重ねて根本原因を探る考え方',fieldMeaning:'事故やミスを個人責任で終わらせず、手順・環境・教育・配置などの原因を確認する',checkPoints:'誰が悪いかではなく、なぜその状況が起きたか',abnormalResponse:'事実確認を行い、Root Causeを特定し、再発防止策につなげる',usefulPhrase:'5Whyは人を責めるためではなく、なぜ起きたかを深掘りして再発防止につなげるために使うものだと思います',relatedLP:'Dive Deep,Learn and Be Curious,Insist on the Highest Standards',experienceNote:'',understanding:4,nextCheck:'実際の転倒事故や通路障害のケースで5Whyを練習する',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),favorite:true},
+  {id:'n4',category:'People',subcat:'Safety',term:'人を咎めず事を正す',title:'人を咎めず事を正す',summary:'個人を責めず、起きた事実と仕組みを改善すること',fieldMeaning:'ミスをした人を責めるのではなく、なぜそうせざるを得なかったのかを確認する',checkPoints:'手順は明確だったか、教育は足りていたか、配置や環境に問題はなかったか',abnormalResponse:'感情的に叱らず、事実確認をして再発しない仕組みに変える',usefulPhrase:'人を責めるのではなく、起きた事実と原因に向き合い、再発防止につなげることが大切だと思います',relatedLP:'Earn Trust,Dive Deep,Ownership',experienceNote:'',understanding:4,nextCheck:'現場で問題が起きた時の声かけ方法を学ぶ',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),favorite:true},
+  {id:'n5',category:'Safety',subcat:'',term:'Safety First',title:'Safety First',summary:'どれだけ物量が多くても安全を最優先にすること',fieldMeaning:'通路確保、転倒防止、無理な持ち上げ防止、コンベア周辺の安全確認を徹底する',checkPoints:'通路に障害物がないか、走っている人がいないか、詰まりや接触リスクがないか',abnormalResponse:'危険があれば作業を止め、PAやSafetyに共有し、是正する',usefulPhrase:'急いでいる時ほど、安全と通路確保を優先します',relatedLP:'Insist on the Highest Standards,Ownership',experienceNote:'',understanding:5,nextCheck:'このサイトで特に多いSafetyリスクを確認する',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),favorite:true},
+];
+
+const SAMPLE_QA = [
+  {id:'q1',question:'Volumeとは何ですか？',answer:'その日に処理する荷物量です。DSではSort、Stow、Pick & Stage、Dispatch全体に影響する基準です。',category:'数字',understanding:3,lastReviewed:null,favorite:false,relatedNoteId:'n1'},
+  {id:'q2',question:'Backlogが増えている時に最初に見るべきことは？',answer:'数字だけで判断せず、どの工程で詰まりが出ているか現場を確認します。原因がHC不足なのか、動線なのか、標準作業の崩れなのかを切り分けます。',category:'数字',understanding:3,lastReviewed:null,favorite:false,relatedNoteId:'n2'},
+  {id:'q3',question:'5Whyを使う目的は？',answer:'誰が悪いかを探すためではなく、なぜ起きたかを深掘りしてRoot Causeを確認し、再発防止につなげるためです。',category:'5Why',understanding:4,lastReviewed:null,favorite:false,relatedNoteId:'n3'},
+];
+
+const SAMPLE_PHRASES = [
+  {id:'p1',phrase:'急いでいる時ほど、安全と通路確保を優先します',category:'Safety',scene:'朝礼・AA声かけ',relatedLP:'Insist on the Highest Standards',favorite:true},
+  {id:'p2',phrase:'数字だけで判断せず、現場を見て詰まりの原因を確認します',category:'Flow',scene:'日次確認・上司報告',relatedLP:'Dive Deep',favorite:false},
+  {id:'p3',phrase:'スピードを上げる時ほど、品質が落ちていないか確認します',category:'Quality',scene:'朝礼',relatedLP:'Insist on the Highest Standards',favorite:false},
+  {id:'p4',phrase:'人を責めるのではなく、起きた事実と原因に向き合います',category:'People',scene:'5Why・振り返り',relatedLP:'Earn Trust',favorite:true},
+  {id:'p5',phrase:'分からないことを聞きやすい状態を作ることも、現場リーダーの大事な役割です',category:'People',scene:'AA声かけ・研修',relatedLP:'Earn Trust',favorite:false},
+];
+
+// ===== STORAGE =====
+const SK = {notes:'dsn_notes',qa:'dsn_qa',phrases:'dsn_phrases',fivewhys:'dsn_fw',improvements:'dsn_impr',reflections:'dsn_refl',consults:'dsn_cons',settings:'dsn_settings'};
+const load = (key,def) => { try{const v=localStorage.getItem(key);return v?JSON.parse(v):def}catch{return def}};
+const save = (key,v) => { try{localStorage.setItem(key,JSON.stringify(v))}catch{} };
+
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const fmtDate = d => d ? new Date(d).toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'}) : '';
+const copyText = async text => { try{await navigator.clipboard.writeText(text);return true}catch{return false} };
+
+// ===== COMPONENTS =====
+
+function StarRating({value,onChange}){
+  return <div className="star-rating">
+    {[1,2,3,4,5].map(i=><span key={i} className={`star${i<=value?' filled':''}`} onClick={()=>onChange&&onChange(i)}>★</span>)}
+  </div>;
+}
+
+function Badge({text,type}){
+  const cls = text==='Safety'?'safety':text==='Quality'?'quality':text==='Flow'||text==='数字'?'flow':text==='People'?'people':text==='5Why'?'five-why':text==='改善'||text==='ケーススタディ'?'improvement':'';
+  return <span className={`badge ${cls}`}>{text}</span>;
+}
+
+function CopyBtn({text,label}){
+  const [copied,setCopied]=useState(false);
+  const handle=async()=>{const ok=await copyText(text);if(ok){setCopied(true);setTimeout(()=>setCopied(false),2000)}};
+  return <button className="btn btn-copy btn-sm" onClick={handle}>{copied?'✓ コピー済':'📋 '+(label||'コピー')}</button>;
+}
+
+// ===== DASHBOARD =====
+function Dashboard({notes,qa,phrases,fivewhys,improvements,reflections}){
+  const lowU = notes.filter(n=>n.understanding<=2);
+  const favPhrases = phrases.filter(p=>p.favorite);
+  const today = new Date().toLocaleDateString('ja-JP');
+  const todayPhrase = phrases[Math.floor(new Date().getDate()%Math.max(phrases.length,1))];
+  return <div className="page">
+    <div className="section-title">📊 ダッシュボード</div>
+    <div className="stat-grid">
+      <div className="stat-box"><div className="stat-num">{notes.length}</div><div className="stat-label">ノート</div></div>
+      <div className="stat-box"><div className="stat-num">{qa.length}</div><div className="stat-label">Q&A</div></div>
+      <div className="stat-box"><div className="stat-num">{phrases.length}</div><div className="stat-label">一言</div></div>
+      <div className="stat-box"><div className="stat-num">{fivewhys.length}</div><div className="stat-label">5Why</div></div>
+      <div className="stat-box"><div className="stat-num">{improvements.length}</div><div className="stat-label">改善</div></div>
+      <div className="stat-box"><div className="stat-num">{reflections.length}</div><div className="stat-label">振り返り</div></div>
+    </div>
+
+    {todayPhrase&&<div className="card" style={{borderLeft:'4px solid #f59e0b'}}>
+      <div style={{fontSize:12,fontWeight:700,color:'#f59e0b',marginBottom:4}}>💬 今日の一言</div>
+      <div style={{fontSize:14,fontStyle:'italic',color:'#1e3a5f'}}>{todayPhrase.phrase}</div>
+      <div style={{fontSize:11,color:'var(--gray)',marginTop:4}}>{todayPhrase.category} / {todayPhrase.scene}</div>
+    </div>}
+
+    {lowU.length>0&&<div className="card">
+      <div className="card-title" style={{color:'#ef4444'}}>⚠️ 理解度が低い項目 ({lowU.length}件)</div>
+      {lowU.map(n=><div key={n.id} style={{padding:'6px 0',borderBottom:'1px solid #f1f5f9',fontSize:13}}>
+        <Badge text={n.category}/><span style={{marginLeft:6,fontWeight:600}}>{n.term||n.title}</span>
+        <StarRating value={n.understanding}/>
+      </div>)}
+    </div>}
+
+    <div className="card">
+      <div className="card-title">🕐 最近更新したノート</div>
+      {[...notes].sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt)).slice(0,3).map(n=><div key={n.id} style={{padding:'6px 0',borderBottom:'1px solid #f1f5f9'}}>
+        <Badge text={n.category}/><span style={{fontSize:13,fontWeight:600,marginLeft:4}}>{n.term||n.title}</span>
+        <div style={{fontSize:11,color:'var(--gray)'}}>{fmtDate(n.updatedAt)}</div>
+      </div>)}
+      {notes.length===0&&<div className="empty"><div className="empty-icon">📝</div>ノートを登録しましょう</div>}
+    </div>
+  </div>;
+}
+
+// ===== NOTES =====
+function NotesTab({notes,setNotes,setPhrases}){
+  const [view,setView]=useState('list');// list|form|detail
+  const [editing,setEditing]=useState(null);
+  const [detail,setDetail]=useState(null);
+  const [filter,setFilter]=useState('');
+  const [catFilter,setCatFilter]=useState('');
+  const [uFilter,setUFilter]=useState('');
+  const [favOnly,setFavOnly]=useState(false);
+
+  const emptyNote={id:'',category:'Safety',term:'',title:'',summary:'',fieldMeaning:'',checkPoints:'',abnormalResponse:'',usefulPhrase:'',relatedLP:'',experienceNote:'',understanding:3,nextCheck:'',favorite:false};
+
+  const filtered = useMemo(()=>notes.filter(n=>{
+    if(favOnly&&!n.favorite)return false;
+    if(catFilter&&n.category!==catFilter)return false;
+    if(uFilter&&n.understanding!==parseInt(uFilter))return false;
+    const kw=filter.toLowerCase();
+    if(!kw)return true;
+    return [n.term,n.title,n.summary,n.fieldMeaning,n.usefulPhrase,n.experienceNote].some(f=>f&&f.toLowerCase().includes(kw));
+  }),[notes,filter,catFilter,uFilter,favOnly]);
+
+  const save2=(form)=>{
+    const now=new Date().toISOString();
+    if(form.id){
+      setNotes(prev=>prev.map(n=>n.id===form.id?{...form,updatedAt:now}:n));
+    } else {
+      const nn={...form,id:uid(),createdAt:now,updatedAt:now};
+      setNotes(prev=>[nn,...prev]);
+      // extract phrase
+      if(nn.usefulPhrase){
+        setPhrases(prev=>[{id:uid(),phrase:nn.usefulPhrase,category:nn.category,scene:'ノートより',relatedLP:'',favorite:false,sourceId:nn.id,sourceType:'note'},...prev]);
+      }
+    }
+    setView('list');setEditing(null);
+  };
+
+  const del=(id)=>{if(window.confirm('削除しますか？'))setNotes(prev=>prev.filter(n=>n.id!==id));};
+  const toggleFav=(id)=>setNotes(prev=>prev.map(n=>n.id===id?{...n,favorite:!n.favorite}:n));
+
+  if(view==='form') return <NoteForm initial={editing||emptyNote} onSave={save2} onCancel={()=>{setView('list');setEditing(null)}}/>;
+  if(view==='detail'&&detail) return <NoteDetail note={detail} onEdit={()=>{setEditing(detail);setView('form')}} onBack={()=>{setView('list');setDetail(null)}} onDel={()=>{del(detail.id);setView('list');setDetail(null)}} onFav={()=>{toggleFav(detail.id);setDetail(prev=>({...prev,favorite:!prev.favorite}))}}/>;
+
+  return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+      <div className="section-title" style={{marginBottom:0}}>📒 ノート</div>
+      <button className="btn btn-primary btn-sm" onClick={()=>{setEditing(null);setView('form')}}>＋ 追加</button>
+    </div>
+    <div className="search-box">
+      <span className="search-icon">🔍</span>
+      <input placeholder="キーワード検索..." value={filter} onChange={e=>setFilter(e.target.value)}/>
+    </div>
+    <div className="tab-scroll">
+      <button className={`tab-btn${catFilter===''?' active':''}`} onClick={()=>setCatFilter('')}>すべて</button>
+      {CATS.map(c=><button key={c} className={`tab-btn${catFilter===c?' active':''}`} onClick={()=>setCatFilter(c)}>{c}</button>)}
+    </div>
+    <div style={{display:'flex',gap:8,marginBottom:10,flexWrap:'wrap'}}>
+      <select style={{width:'auto',flex:1}} value={uFilter} onChange={e=>setUFilter(e.target.value)}>
+        <option value="">理解度 全て</option>
+        {[1,2,3,4,5].map(i=><option key={i} value={i}>★{i}</option>)}
+      </select>
+      <button className={`btn btn-sm ${favOnly?'btn-primary':'btn-gray'}`} onClick={()=>setFavOnly(!favOnly)}>⭐ お気に入り</button>
+    </div>
+    <div style={{fontSize:12,color:'var(--gray)',marginBottom:8}}>{filtered.length}件</div>
+    {filtered.length===0&&<div className="empty"><div className="empty-icon">📒</div>ノートがありません</div>}
+    {filtered.map(n=><div key={n.id} className="note-card">
+      <div className="top">
+        <div>
+          <Badge text={n.category}/>
+          <div className="note-title">{n.term||n.title}</div>
+        </div>
+        <div style={{display:'flex',gap:4,alignItems:'center'}}>
+          <button style={{background:'none',border:'none',cursor:'pointer',fontSize:18,color:n.favorite?'#f59e0b':'#d1d5db'}} onClick={()=>toggleFav(n.id)}>★</button>
+        </div>
+      </div>
+      <div className="note-summary">{n.summary}</div>
+      <div className="understanding-bar">
+        {[1,2,3,4,5].map(i=><div key={i} className={`u-dot${i<=n.understanding?' filled':''}`}/>)}
+        <span style={{fontSize:11,color:'var(--gray)',marginLeft:4}}>理解度{n.understanding}</span>
+      </div>
+      {n.usefulPhrase&&<div className="note-phrase">「{n.usefulPhrase}」</div>}
+      <div className="action-row">
+        <button className="btn btn-outline btn-sm" onClick={()=>{setDetail(n);setView('detail')}}>詳細</button>
+        <button className="btn btn-gray btn-sm" onClick={()=>{setEditing(n);setView('form')}}>編集</button>
+        <button className="btn btn-danger btn-sm" onClick={()=>del(n.id)}>削除</button>
+        {n.usefulPhrase&&<CopyBtn text={n.usefulPhrase} label="一言コピー"/>}
+      </div>
+    </div>)}
+  </div>;
+}
+
+function NoteForm({initial,onSave,onCancel}){
+  const [f,setF]=useState(initial);
+  const set=k=>e=>setF(p=>({...p,[k]:e.target.value}));
+  return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+      <div className="section-title" style={{marginBottom:0}}>{f.id?'編集':'新規ノート'}</div>
+      <button className="btn btn-gray btn-sm" onClick={onCancel}>← 戻る</button>
+    </div>
+    <div className="card">
+      <label>カテゴリ *</label>
+      <select value={f.category} onChange={set('category')}>{CATS.map(c=><option key={c}>{c}</option>)}</select>
+      <label>用語・テーマ *</label>
+      <input placeholder="例：Backlog" value={f.term} onChange={set('term')}/>
+      <label>一言でいうと *</label>
+      <input placeholder="短く説明" value={f.summary} onChange={set('summary')}/>
+      <details>
+        <summary>詳細入力（任意）</summary>
+        <label>現場での意味</label>
+        <textarea placeholder="現場でどういう状況を指すか" value={f.fieldMeaning} onChange={set('fieldMeaning')}/>
+        <label>見るべきポイント</label>
+        <textarea placeholder="確認すべきこと" value={f.checkPoints} onChange={set('checkPoints')}/>
+        <label>異常時の対応</label>
+        <textarea placeholder="問題が起きた時の行動" value={f.abnormalResponse} onChange={set('abnormalResponse')}/>
+        <label>関連LP</label>
+        <input placeholder="例：Dive Deep, Ownership" value={f.relatedLP} onChange={set('relatedLP')}/>
+        <label>実体験メモ</label>
+        <textarea placeholder="現場で実際に見たこと・感じたこと" value={f.experienceNote} onChange={set('experienceNote')}/>
+        <label>次に確認すること</label>
+        <input placeholder="次のアクション" value={f.nextCheck} onChange={set('nextCheck')}/>
+      </details>
+      <label>使える一言</label>
+      <input placeholder="朝礼や報告で使えるフレーズ" value={f.usefulPhrase} onChange={set('usefulPhrase')}/>
+      <label>理解度</label>
+      <StarRating value={f.understanding} onChange={v=>setF(p=>({...p,understanding:v}))}/>
+    </div>
+    <div style={{display:'flex',gap:8}}>
+      <button className="btn btn-primary" style={{flex:1}} onClick={()=>{if(!f.term&&!f.title){alert('用語・テーマを入力してください');return};onSave(f)}}>保存</button>
+      <button className="btn btn-gray" onClick={onCancel}>キャンセル</button>
+    </div>
+  </div>;
+}
+
+function NoteDetail({note:n,onEdit,onBack,onDel,onFav}){
+  return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
+      <button className="btn btn-gray btn-sm" onClick={onBack}>← 戻る</button>
+      <div style={{display:'flex',gap:6}}>
+        <button style={{background:'none',border:'none',cursor:'pointer',fontSize:20,color:n.favorite?'#f59e0b':'#d1d5db'}} onClick={onFav}>★</button>
+        <button className="btn btn-outline btn-sm" onClick={onEdit}>編集</button>
+        <button className="btn btn-danger btn-sm" onClick={onDel}>削除</button>
+      </div>
+    </div>
+    <div className="card">
+      <Badge text={n.category}/>
+      <div style={{fontSize:20,fontWeight:800,color:'var(--navy)',margin:'6px 0'}}>{n.term||n.title}</div>
+      <div style={{fontSize:15,color:'#475569',marginBottom:8}}>{n.summary}</div>
+      <StarRating value={n.understanding}/>
+      {[
+        ['📍 現場での意味',n.fieldMeaning],
+        ['👁 見るべきポイント',n.checkPoints],
+        ['🚨 異常時の対応',n.abnormalResponse],
+        ['🔗 関連LP',n.relatedLP],
+        ['📓 実体験メモ',n.experienceNote],
+        ['➡️ 次に確認すること',n.nextCheck],
+      ].map(([label,val])=>val&&<div key={label} style={{marginTop:10}}>
+        <div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginBottom:2}}>{label}</div>
+        <div style={{fontSize:14,color:'#374151',lineHeight:1.6}}>{val}</div>
+      </div>)}
+      {n.usefulPhrase&&<div style={{marginTop:12}}>
+        <div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginBottom:4}}>💬 使える一言</div>
+        <div className="note-phrase">「{n.usefulPhrase}」</div>
+        <CopyBtn text={n.usefulPhrase} label="コピー"/>
+      </div>}
+      <div style={{fontSize:11,color:'var(--gray)',marginTop:10}}>更新：{fmtDate(n.updatedAt)}</div>
+    </div>
+  </div>;
+}
+
+// ===== Q&A =====
+function QATab({qa,setQA,notes}){
+  const [mode,setMode]=useState('list');// list|review|form
+  const [editing,setEditing]=useState(null);
+  const [reviewIdx,setReviewIdx]=useState(0);
+  const [showAns,setShowAns]=useState(false);
+  const [filter,setFilter]=useState('');
+  const [catFilter,setCatFilter]=useState('');
+  const [reviewFilter,setReviewFilter]=useState('all');// all|low|fav
+
+  const emptyQA={id:'',question:'',answer:'',category:'数字',understanding:3,favorite:false,relatedNoteId:''};
+
+  const filtered = useMemo(()=>qa.filter(q=>{
+    if(catFilter&&q.category!==catFilter)return false;
+    const kw=filter.toLowerCase();
+    if(!kw)return true;
+    return [q.question,q.answer].some(f=>f&&f.toLowerCase().includes(kw));
+  }),[qa,filter,catFilter]);
+
+  const reviewList = useMemo(()=>{
+    let list=[...qa];
+    if(reviewFilter==='low')list=list.filter(q=>q.understanding<=2);
+    if(reviewFilter==='fav')list=list.filter(q=>q.favorite);
+    return list.sort(()=>Math.random()-.5);
+  },[qa,reviewFilter]);
+
+  const saveQA=(f)=>{
+    const now=new Date().toISOString();
+    if(f.id){setQA(p=>p.map(q=>q.id===f.id?{...f,updatedAt:now}:q))}
+    else{setQA(p=>[{...f,id:uid(),createdAt:now,updatedAt:now},...p])}
+    setMode('list');setEditing(null);
+  };
+
+  const evalQA=(idx,score)=>{
+    const item=reviewList[idx];
+    setQA(p=>p.map(q=>q.id===item.id?{...q,understanding:Math.max(1,Math.min(5,score)),lastReviewed:new Date().toISOString()}:q));
+    setShowAns(false);
+    setReviewIdx(i=>Math.min(i+1,reviewList.length-1));
+  };
+
+  if(mode==='form') return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
+      <div className="section-title" style={{marginBottom:0}}>{editing?.id?'Q&A編集':'新規Q&A'}</div>
+      <button className="btn btn-gray btn-sm" onClick={()=>{setMode('list');setEditing(null)}}>← 戻る</button>
+    </div>
+    <div className="card">
+      <label>カテゴリ</label>
+      <select value={editing?.category||'数字'} onChange={e=>setEditing(p=>({...p,category:e.target.value}))}>{CATS.map(c=><option key={c}>{c}</option>)}</select>
+      <label>質問 *</label>
+      <textarea placeholder="例：Backlogが増えた時に最初に確認することは？" value={editing?.question||''} onChange={e=>setEditing(p=>({...p,question:e.target.value}))}/>
+      <label>回答 *</label>
+      <textarea style={{minHeight:100}} placeholder="回答を入力" value={editing?.answer||''} onChange={e=>setEditing(p=>({...p,answer:e.target.value}))}/>
+      <label>理解度</label>
+      <StarRating value={editing?.understanding||3} onChange={v=>setEditing(p=>({...p,understanding:v}))}/>
+      <div style={{marginTop:10}}>
+        <label style={{display:'flex',alignItems:'center',gap:8}}>
+          <input type="checkbox" checked={editing?.favorite||false} onChange={e=>setEditing(p=>({...p,favorite:e.target.checked}))}/> お気に入り
+        </label>
+      </div>
+    </div>
+    <button className="btn btn-primary" style={{width:'100%'}} onClick={()=>{if(!editing?.question){alert('質問を入力');return};saveQA(editing||emptyQA)}}>保存</button>
+  </div>;
+
+  if(mode==='review') return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
+      <div className="section-title" style={{marginBottom:0}}>🎯 復習モード</div>
+      <button className="btn btn-gray btn-sm" onClick={()=>{setMode('list');setReviewIdx(0)}}>終了</button>
+    </div>
+    <div style={{display:'flex',gap:6,marginBottom:12}}>
+      {['all','low','fav'].map(t=><button key={t} className={`btn btn-sm ${reviewFilter===t?'btn-primary':'btn-gray'}`} onClick={()=>{setReviewFilter(t);setReviewIdx(0);setShowAns(false)}}>
+        {t==='all'?'全て':t==='low'?'苦手':' ⭐ お気に入り'}
+      </button>)}
+    </div>
+    {reviewList.length===0?<div className="empty"><div className="empty-icon">🎯</div>Q&Aがありません</div>:<>
+      <div style={{fontSize:13,color:'var(--gray)',marginBottom:8}}>{reviewIdx+1} / {reviewList.length}</div>
+      <div className="review-card">
+        <div className="review-q">{reviewList[reviewIdx].question}</div>
+        {!showAns?<button className="btn btn-primary" style={{width:'100%'}} onClick={()=>setShowAns(true)}>回答を見る</button>:<>
+          <div className="review-a">{reviewList[reviewIdx].answer}</div>
+          <div style={{fontSize:13,fontWeight:700,color:'var(--gray)',marginBottom:8}}>自己評価</div>
+          <div style={{display:'flex',gap:8,justifyContent:'center'}}>
+            <button className="btn btn-danger btn-sm" onClick={()=>evalQA(reviewIdx,Math.max(1,reviewList[reviewIdx].understanding-1))}>❌ できなかった</button>
+            <button className="btn btn-gray btn-sm" onClick={()=>evalQA(reviewIdx,reviewList[reviewIdx].understanding)}>😐 微妙</button>
+            <button className="btn btn-green btn-sm" onClick={()=>evalQA(reviewIdx,Math.min(5,reviewList[reviewIdx].understanding+1))}>✅ できた</button>
+          </div>
+        </>}
+      </div>
+      {reviewIdx<reviewList.length-1&&<button className="btn btn-outline" style={{width:'100%',marginTop:10}} onClick={()=>{setShowAns(false);setReviewIdx(i=>i+1)}}>スキップ →</button>}
+    </>}
+  </div>;
+
+  return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+      <div className="section-title" style={{marginBottom:0}}>🎯 Q&A</div>
+      <div style={{display:'flex',gap:6}}>
+        <button className="btn btn-outline btn-sm" onClick={()=>{setReviewIdx(0);setShowAns(false);setMode('review')}}>復習</button>
+        <button className="btn btn-primary btn-sm" onClick={()=>{setEditing({...emptyQA});setMode('form')}}>＋ 追加</button>
+      </div>
+    </div>
+    <div className="search-box">
+      <span className="search-icon">🔍</span>
+      <input placeholder="検索..." value={filter} onChange={e=>setFilter(e.target.value)}/>
+    </div>
+    <div className="tab-scroll">
+      <button className={`tab-btn${catFilter===''?' active':''}`} onClick={()=>setCatFilter('')}>すべて</button>
+      {CATS.map(c=><button key={c} className={`tab-btn${catFilter===c?' active':''}`} onClick={()=>setCatFilter(c)}>{c}</button>)}
+    </div>
+    {filtered.map(q=><div key={q.id} className="card">
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        <Badge text={q.category}/>
+        <span style={{color:q.favorite?'#f59e0b':'#d1d5db',fontSize:16}}>★</span>
+      </div>
+      <div style={{fontWeight:700,fontSize:14,margin:'4px 0'}}>{q.question}</div>
+      <div style={{fontSize:13,color:'#475569',lineHeight:1.5,marginBottom:6}}>{q.answer}</div>
+      <StarRating value={q.understanding}/>
+      <div className="action-row">
+        <button className="btn btn-gray btn-sm" onClick={()=>{setEditing(q);setMode('form')}}>編集</button>
+        <button className="btn btn-danger btn-sm" onClick={()=>{if(window.confirm('削除?'))setQA(p=>p.filter(x=>x.id!==q.id))}}>削除</button>
+        <CopyBtn text={`Q: ${q.question}\nA: ${q.answer}`}/>
+      </div>
+    </div>)}
+    {filtered.length===0&&<div className="empty"><div className="empty-icon">🎯</div>Q&Aを追加しましょう</div>}
+  </div>;
+}
+
+// ===== AI CONSULT =====
+function AIConsultTab({consults,setConsults}){
+  const [step,setStep]=useState('form');// form|result
+  const [f,setF]=useState({consultType:'現場トラブル相談',targetAI:'Amazon社内AI',process:'',impacts:[],situation:'',terms:'',numbers:'',safetyRisk:'',qualityRisk:'',deliveryImpact:'',productivityImpact:'',doneActions:'',consultRequest:'',outputFormat:'1.結論 2.すぐ確認すること 3.すぐ取る行動 4.エスカレーション基準 5.再発防止策'});
+  const [prompt,setPrompt]=useState('');
+  const [aiResponse,setAiResponse]=useState('');
+  const [showWarning,setShowWarning]=useState(true);
+  const set=k=>e=>setF(p=>({...p,[k]:e.target.value}));
+  const toggleImpact=v=>setF(p=>({...p,impacts:p.impacts.includes(v)?p.impacts.filter(x=>x!==v):[...p.impacts,v]}));
+
+  const generate=()=>{
+    const p=`あなたはAmazon DSの現場改善・安全・オペレーションに詳しい業務支援AIです。
+以下の状況について、AMとして優先して確認すべき点、すぐ取るべき行動、エスカレーション基準、再発防止策を整理してください。
+
+【相談タイプ】${f.consultType}
+
+【前提】
+Amazon DSの現場で発生している事象です。安全を最優先にしながら、品質・Delivery・Productivityへの影響も考慮したいです。
+
+【工程】${f.process||'（未指定）'}
+
+【状況】
+${f.situation||'（未入力）'}
+
+${f.terms?`【関係する用語】\n${f.terms}\n`:''}
+${f.numbers?`【現在の数字・状況】\n${f.numbers}\n`:''}
+${f.safetyRisk?`【Safetyリスク】\n${f.safetyRisk}\n`:''}
+${f.qualityRisk?`【Qualityリスク】\n${f.qualityRisk}\n`:''}
+${f.deliveryImpact?`【Deliveryへの影響】\n${f.deliveryImpact}\n`:''}
+${f.productivityImpact?`【Productivityへの影響】\n${f.productivityImpact}\n`:''}
+${f.doneActions?`【すでに行った対応】\n${f.doneActions}\n`:''}
+
+【相談したいこと】
+${f.consultRequest||'（未入力）'}
+
+【出力してほしい形式】
+${f.outputFormat}`;
+    setPrompt(p);setStep('result');
+    setConsults(prev=>[{id:uid(),...f,generatedPrompt:p,createdAt:new Date().toISOString()},...prev]);
+  };
+
+  const shortPrompt=`Amazon DSの現場相談です。
+工程：${f.process||'（未指定）'}
+状況：${f.situation}
+${f.safetyRisk?`安全懸念：${f.safetyRisk}\n`:''}${f.doneActions?`対応済み：${f.doneActions}\n`:''}
+AMとして、次に確認すべきこと・すぐ取る行動・エスカレーション基準・再発防止策を整理してください。`;
+
+  if(step==='result') return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
+      <div className="section-title" style={{marginBottom:0}}>🤖 AI相談プロンプト</div>
+      <button className="btn btn-gray btn-sm" onClick={()=>setStep('form')}>← 戻る</button>
+    </div>
+    <div className="alert alert-warning">{PRIVACY_WARNING}</div>
+    <div className="card">
+      <div style={{fontWeight:700,marginBottom:8}}>フル版プロンプト</div>
+      <div className="prompt-box">
+        {prompt}
+        <div className="copy-float"><CopyBtn text={prompt} label="コピー"/></div>
+      </div>
+      <div style={{display:'flex',gap:6,flexWrap:'wrap',marginTop:8}}>
+        {AI_TYPES.map(a=><CopyBtn key={a} text={`${a}向け:\n\n${prompt}`} label={a}/>)}
+      </div>
+    </div>
+    <div className="card">
+      <div style={{fontWeight:700,marginBottom:8}}>短縮版プロンプト</div>
+      <div className="prompt-box">
+        {shortPrompt}
+        <div className="copy-float"><CopyBtn text={shortPrompt} label="コピー"/></div>
+      </div>
+    </div>
+    <div className="card">
+      <div className="card-title">📥 AI回答をノートへ貼り付け</div>
+      <label>AIから返ってきた回答を貼り付け</label>
+      <textarea style={{minHeight:120}} placeholder="AIの回答をここに貼り付けてください..." value={aiResponse} onChange={e=>setAiResponse(e.target.value)}/>
+      {aiResponse&&<div style={{marginTop:8}}>
+        <CopyBtn text={aiResponse} label="回答コピー"/>
+      </div>}
+    </div>
+  </div>;
+
+  return <div className="page">
+    <div className="section-title">🤖 AI相談</div>
+    {showWarning&&<div className="alert alert-warning">
+      <div style={{fontWeight:700,marginBottom:4}}>⚠️ 入力前に必ずご確認ください</div>
+      <div style={{fontSize:12,lineHeight:1.6,whiteSpace:'pre-line'}}>{PRIVACY_WARNING}</div>
+      <button className="btn btn-gray btn-sm" style={{marginTop:8}} onClick={()=>setShowWarning(false)}>確認しました</button>
+    </div>}
+    <div className="card">
+      <label>相談タイプ</label>
+      <select value={f.consultType} onChange={set('consultType')}>{CONSULT_TYPES.map(t=><option key={t}>{t}</option>)}</select>
+      <label>出力先AI</label>
+      <select value={f.targetAI} onChange={set('targetAI')}>{AI_TYPES.map(t=><option key={t}>{t}</option>)}</select>
+      <label>工程</label>
+      <select value={f.process} onChange={set('process')}>
+        <option value="">選択してください</option>
+        {PROCESSES.map(p=><option key={p}>{p}</option>)}
+      </select>
+      <label>今起きている状況 *（個人名・拠点名は抽象化）</label>
+      <textarea placeholder="例：作業後半でBacklogが増えています。通路上に荷物が増え、動線が悪くなっています。" value={f.situation} onChange={set('situation')}/>
+      <details>
+        <summary>詳細情報（任意）</summary>
+        <label>関係する用語</label>
+        <input placeholder="例：Backlog、HC、Productivity" value={f.terms} onChange={set('terms')}/>
+        <label>現在の状況（数字は抽象化）</label>
+        <input placeholder="例：通常より多い、前日より遅れている" value={f.numbers} onChange={set('numbers')}/>
+        <label>Safetyリスク</label>
+        <input placeholder="例：通路上の荷物による転倒リスク" value={f.safetyRisk} onChange={set('safetyRisk')}/>
+        <label>Qualityリスク</label>
+        <input placeholder="例：急ぎ作業による誤ピックリスク" value={f.qualityRisk} onChange={set('qualityRisk')}/>
+        <label>すでに行った対応</label>
+        <textarea placeholder="例：PAへ共有済み。通路上の荷物を一時的に整理しました。" value={f.doneActions} onChange={set('doneActions')}/>
+      </details>
+      <label>相談したいこと *</label>
+      <textarea placeholder="例：AMとして次に何を確認し、どの順番で対応すべきか整理してください。" value={f.consultRequest} onChange={set('consultRequest')}/>
+    </div>
+    <button className="btn btn-primary" style={{width:'100%'}} onClick={()=>{if(!f.situation){alert('状況を入力してください');return};generate()}}>プロンプトを生成</button>
+  </div>;
+}
+
+// ===== 5WHY =====
+function FiveWhyTab({fivewhys,setFivewhys}){
+  const [view,setView]=useState('list');// list|form|detail
+  const [f,setF]=useState({event:'',process:'',directCause:'',context:'',why1:'',why2:'',why3:'',why4:'',why5:'',rootCause:'',correctiveAction:'',preventiveAction:'',relatedLP:'',phrase:''});
+  const [detail,setDetail]=useState(null);
+  const set=k=>e=>setF(p=>({...p,[k]:e.target.value}));
+  const save2=()=>{
+    if(!f.event){alert('事象を入力してください');return}
+    setFivewhys(p=>[{...f,id:uid(),createdAt:new Date().toISOString()},...p]);
+    setView('list');
+  };
+
+  if(view==='form') return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
+      <div className="section-title" style={{marginBottom:0}}>🔍 5Why作成</div>
+      <button className="btn btn-gray btn-sm" onClick={()=>setView('list')}>← 戻る</button>
+    </div>
+    <div className="card">
+      <div className="alert alert-info">人を責めるためではなく、仕組み・手順・環境・配置の観点で深掘りしましょう</div>
+      <label>起きた事象 *</label>
+      <textarea placeholder="例：通路上に箱が置かれ、転倒リスクがあった" value={f.event} onChange={set('event')}/>
+      <label>工程</label>
+      <select value={f.process} onChange={set('process')}><option value="">選択</option>{PROCESSES.map(p=><option key={p}>{p}</option>)}</select>
+      <label>直接原因</label>
+      <input placeholder="例：コンベア詰まり時に一時置き場がなかった" value={f.directCause} onChange={set('directCause')}/>
+      <label>Why 1（なぜ起きたか？）</label>
+      <input value={f.why1} onChange={set('why1')} placeholder=""/>
+      <label>Why 2（なぜそうなったか？）</label>
+      <input value={f.why2} onChange={set('why2')} placeholder=""/>
+      <label>Why 3</label>
+      <input value={f.why3} onChange={set('why3')} placeholder=""/>
+      <label>Why 4</label>
+      <input value={f.why4} onChange={set('why4')} placeholder=""/>
+      <label>Why 5（根本原因に近づく）</label>
+      <input value={f.why5} onChange={set('why5')} placeholder=""/>
+      <label>Root Cause（本当の原因）</label>
+      <textarea placeholder="仕組み・手順・教育・配置・5Sなどの観点で" value={f.rootCause} onChange={set('rootCause')}/>
+      <label>是正処置（Corrective Action）</label>
+      <textarea placeholder="再発しないための対策" value={f.correctiveAction} onChange={set('correctiveAction')}/>
+      <label>予防処置（Preventive Action）</label>
+      <textarea placeholder="類似事象を防ぐための仕組み" value={f.preventiveAction} onChange={set('preventiveAction')}/>
+      <label>関連LP</label>
+      <input placeholder="例：Dive Deep, Ownership" value={f.relatedLP} onChange={set('relatedLP')}/>
+      <label>研修で話せる一言</label>
+      <input placeholder="この事例から得た学びを一言で" value={f.phrase} onChange={set('phrase')}/>
+    </div>
+    <button className="btn btn-primary" style={{width:'100%'}} onClick={save2}>保存</button>
+  </div>;
+
+  if(view==='detail'&&detail) return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
+      <button className="btn btn-gray btn-sm" onClick={()=>{setView('list');setDetail(null)}}>← 戻る</button>
+      <button className="btn btn-danger btn-sm" onClick={()=>{if(window.confirm('削除?')){setFivewhys(p=>p.filter(x=>x.id!==detail.id));setView('list');setDetail(null)}}}>削除</button>
+    </div>
+    <div className="card">
+      <div className="card-title">🔍 {detail.event}</div>
+      {detail.process&&<span className="process-badge">{detail.process}</span>}
+      {detail.directCause&&<><div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginTop:8}}>直接原因</div><div style={{fontSize:13}}>{detail.directCause}</div></>}
+      <div style={{marginTop:10}}>
+        {[['Why 1',detail.why1],['Why 2',detail.why2],['Why 3',detail.why3],['Why 4',detail.why4],['Why 5',detail.why5]].map(([l,v])=>v&&<div key={l} className="five-why-step">
+          <div className="why-label">{l}</div><div style={{fontSize:13}}>{v}</div>
+        </div>)}
+      </div>
+      {detail.rootCause&&<div className="alert alert-info" style={{marginTop:8}}><strong>Root Cause：</strong>{detail.rootCause}</div>}
+      {detail.correctiveAction&&<><div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginTop:8}}>是正処置</div><div style={{fontSize:13,lineHeight:1.6}}>{detail.correctiveAction}</div></>}
+      {detail.preventiveAction&&<><div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginTop:8}}>予防処置</div><div style={{fontSize:13,lineHeight:1.6}}>{detail.preventiveAction}</div></>}
+      {detail.relatedLP&&<><div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginTop:8}}>関連LP</div><div style={{fontSize:13}}>{detail.relatedLP}</div></>}
+      {detail.phrase&&<div className="note-phrase">「{detail.phrase}」<CopyBtn text={detail.phrase} label="コピー"/></div>}
+    </div>
+    {/* Copy buttons */}
+    <div className="card">
+      <div className="card-title">📋 コピー用</div>
+      <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+        <CopyBtn text={`【5Why】${detail.event}\nWhy1: ${detail.why1}\nWhy2: ${detail.why2}\nWhy3: ${detail.why3}\nWhy4: ${detail.why4}\nWhy5: ${detail.why5}\nRoot Cause: ${detail.rootCause}\n是正処置: ${detail.correctiveAction}\n予防処置: ${detail.preventiveAction}`} label="全文コピー"/>
+        {detail.phrase&&<CopyBtn text={detail.phrase} label="一言コピー"/>}
+      </div>
+    </div>
+  </div>;
+
+  return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+      <div className="section-title" style={{marginBottom:0}}>🔍 5Why</div>
+      <button className="btn btn-primary btn-sm" onClick={()=>setView('form')}>＋ 作成</button>
+    </div>
+    {fivewhys.length===0&&<div className="empty"><div className="empty-icon">🔍</div>5Whyを作成しましょう</div>}
+    {fivewhys.map(w=><div key={w.id} className="card" onClick={()=>{setDetail(w);setView('detail')}} style={{cursor:'pointer'}}>
+      <div style={{fontWeight:700,fontSize:14,color:'var(--navy)',marginBottom:4}}>{w.event}</div>
+      {w.process&&<span className="process-badge">{w.process}</span>}
+      {w.rootCause&&<div style={{fontSize:13,color:'#475569',marginTop:4}}>Root Cause: {w.rootCause.slice(0,60)}...</div>}
+      <div style={{fontSize:11,color:'var(--gray)',marginTop:4}}>{fmtDate(w.createdAt)}</div>
+    </div>)}
+  </div>;
+}
+
+// ===== IMPROVEMENT =====
+function ImprovementTab({improvements,setImprovements,setPhrases}){
+  const [view,setView]=useState('list');// list|form|detail
+  const [f,setF]=useState({event:'',process:'',impacts:[],directCause:'',context:'',doneActions:'',immediateActions:'',correctiveActions:'',preventiveActions:'',actionPlan:'',reportText:'',morningText:'',phrase:'',relatedLP:''});
+  const [detail,setDetail]=useState(null);
+  const set=k=>e=>setF(p=>({...p,[k]:e.target.value}));
+  const toggleImpact=v=>setF(p=>({...p,impacts:p.impacts.includes(v)?p.impacts.filter(x=>x!==v):[...p.impacts,v]}));
+
+  const save2=()=>{
+    if(!f.event){alert('事象を入力してください');return}
+    const item={...f,id:uid(),createdAt:new Date().toISOString()};
+    setImprovements(p=>[item,...p]);
+    if(f.phrase)setPhrases(prev=>[{id:uid(),phrase:f.phrase,category:'改善',scene:'改善アクションより',relatedLP:f.relatedLP||'',favorite:false},...prev]);
+    setView('list');
+  };
+
+  if(view==='form') return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
+      <div className="section-title" style={{marginBottom:0}}>🛠 改善アクション作成</div>
+      <button className="btn btn-gray btn-sm" onClick={()=>setView('list')}>← 戻る</button>
+    </div>
+    <div className="alert alert-info">個人を責めず、事実ベースで整理してください。Safety最優先。</div>
+    <div className="card">
+      <label>起きた事象 *</label>
+      <textarea placeholder="例：通路上に箱が置かれ、転倒リスクがあった" value={f.event} onChange={set('event')}/>
+      <label>工程</label>
+      <select value={f.process} onChange={set('process')}><option value="">選択</option>{PROCESSES.map(p=><option key={p}>{p}</option>)}</select>
+      <label>影響した領域（複数選択可）</label>
+      <div style={{display:'flex',gap:6,flexWrap:'wrap',margin:'4px 0'}}>
+        {IMPACTS.map(im=><button key={im} className={`btn btn-sm ${f.impacts.includes(im)?'btn-primary':'btn-gray'}`} onClick={()=>toggleImpact(im)}>{im}</button>)}
+      </div>
+      <label>直接原因</label>
+      <input placeholder="例：一時置き場が明確でなかった" value={f.directCause} onChange={set('directCause')}/>
+      <label>背景・状況</label>
+      <textarea placeholder="例：Volume増加でHCに余裕がなかった" value={f.context} onChange={set('context')}/>
+      <label>すでに実施した対応</label>
+      <input placeholder="例：PAへ共有、荷物を整理した" value={f.doneActions} onChange={set('doneActions')}/>
+    </div>
+    <div className="card">
+      <div style={{fontWeight:700,color:'var(--navy)',marginBottom:8}}>改善策 3段階</div>
+      <label>A. すぐやる暫定対応（今日できること）</label>
+      <textarea placeholder="例：通路上の箱を撤去する、PAへ共有する" value={f.immediateActions} onChange={set('immediateActions')}/>
+      <label>B. 次にやる是正処置（数日以内）</label>
+      <textarea placeholder="例：床面マーキングを追加する、標準作業を再周知する" value={f.correctiveActions} onChange={set('correctiveActions')}/>
+      <label>C. 再発防止・仕組み化</label>
+      <textarea placeholder="例：標準作業書へ追記する、Safety巡回チェックリストに追加する" value={f.preventiveActions} onChange={set('preventiveActions')}/>
+    </div>
+    <div className="card">
+      <label>朝礼・AA向け共有文</label>
+      <textarea placeholder="現場での共有文を作成" value={f.morningText} onChange={set('morningText')}/>
+      <label>上司報告文</label>
+      <textarea placeholder="上司への報告文" value={f.reportText} onChange={set('reportText')}/>
+      <label>使える一言</label>
+      <input placeholder="この改善から得た学びを一言で" value={f.phrase} onChange={set('phrase')}/>
+      <label>関連LP</label>
+      <input placeholder="例：Ownership, Dive Deep" value={f.relatedLP} onChange={set('relatedLP')}/>
+    </div>
+    <button className="btn btn-primary" style={{width:'100%'}} onClick={save2}>保存</button>
+  </div>;
+
+  if(view==='detail'&&detail) return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
+      <button className="btn btn-gray btn-sm" onClick={()=>{setView('list');setDetail(null)}}>← 戻る</button>
+      <button className="btn btn-danger btn-sm" onClick={()=>{if(window.confirm('削除?')){setImprovements(p=>p.filter(x=>x.id!==detail.id));setView('list');setDetail(null)}}}>削除</button>
+    </div>
+    <div className="card">
+      <div className="card-title">🛠 {detail.event}</div>
+      {detail.process&&<span className="process-badge">{detail.process}</span>}
+      {detail.impacts?.length>0&&<div style={{marginTop:6}}>{detail.impacts.map(im=><Badge key={im} text={im}/>)}</div>}
+      {detail.directCause&&<><div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginTop:8}}>直接原因</div><div style={{fontSize:13}}>{detail.directCause}</div></>}
+      {[['A. すぐやる暫定対応',detail.immediateActions,'#fee2e2','#b91c1c'],
+        ['B. 次にやる是正処置',detail.correctiveActions,'#fef3c7','#92400e'],
+        ['C. 再発防止',detail.preventiveActions,'#d1fae5','#065f46']
+      ].map(([l,v,bg,cl])=>v&&<div key={l} style={{background:bg,border:`1px solid ${cl}20`,borderRadius:8,padding:10,marginTop:8}}>
+        <div style={{fontSize:12,fontWeight:700,color:cl,marginBottom:4}}>{l}</div>
+        <div style={{fontSize:13,lineHeight:1.6}}>{v}</div>
+      </div>)}
+      {detail.morningText&&<><div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginTop:10}}>朝礼共有文</div>
+        <div className="note-phrase">{detail.morningText}</div>
+        <CopyBtn text={detail.morningText} label="朝礼文コピー"/></>}
+      {detail.reportText&&<><div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginTop:8}}>上司報告文</div>
+        <div style={{fontSize:13,background:'#f8fafc',padding:8,borderRadius:6,lineHeight:1.6}}>{detail.reportText}</div>
+        <CopyBtn text={detail.reportText} label="報告文コピー"/></>}
+      {detail.phrase&&<div style={{marginTop:10}}><div className="note-phrase">「{detail.phrase}」</div><CopyBtn text={detail.phrase}/></div>}
+      <div style={{fontSize:11,color:'var(--gray)',marginTop:8}}>{fmtDate(detail.createdAt)}</div>
+    </div>
+  </div>;
+
+  return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+      <div className="section-title" style={{marginBottom:0}}>🛠 改善アクション</div>
+      <button className="btn btn-primary btn-sm" onClick={()=>setView('form')}>＋ 作成</button>
+    </div>
+    {improvements.length===0&&<div className="empty"><div className="empty-icon">🛠</div>改善アクションを作成しましょう</div>}
+    {improvements.map(im=><div key={im.id} className="card" onClick={()=>{setDetail(im);setView('detail')}} style={{cursor:'pointer'}}>
+      <div style={{fontWeight:700,fontSize:14,color:'var(--navy)',marginBottom:4}}>{im.event}</div>
+      {im.process&&<span className="process-badge">{im.process}</span>}
+      {im.impacts?.map(i=><Badge key={i} text={i}/>)}
+      {im.phrase&&<div style={{fontSize:12,color:'#475569',marginTop:4,fontStyle:'italic'}}>「{im.phrase}」</div>}
+      <div style={{fontSize:11,color:'var(--gray)',marginTop:4}}>{fmtDate(im.createdAt)}</div>
+    </div>)}
+  </div>;
+}
+
+// ===== MORNING BRIEF =====
+function MorningBriefTab(){
+  const [f,setF]=useState({theme:'',event:'',process:'',target:'全体朝礼',impacts:[],action:'',attention:'',tone:'やさしく'});
+  const [result,setResult]=useState(null);
+  const set=k=>e=>setF(p=>({...p,[k]:e.target.value}));
+  const toggleImpact=v=>setF(p=>({...p,impacts:p.impacts.includes(v)?p.impacts.filter(x=>x!==v):[...p.impacts,v]}));
+
+  const generate=()=>{
+    const tone=f.tone==='注意喚起強め'?'しっかりと注意を促し、':'やさしく丁寧に';
+    const r={
+      ten:`【${f.theme||f.event}】本日の重点確認ポイントをお伝えします。${f.attention?`特に${f.attention}に注意をお願いします。`:''}`,
+      thirty:`本日は${f.theme||f.event}について共有です。${f.event?f.event+'という状況があります。':''} ${f.action?`${tone}${f.action}をお願いします。`:''}`,
+      sixty:`本日は${f.theme||f.event}について共有させていただきます。\n${f.event?`${f.event}という状況が確認されました。`+'\n':''}\n${f.impacts?.length>0?`${f.impacts.join('・')}への影響があります。`+'\n':''}\n${f.attention?`特に${f.attention}にご注意ください。`+'\n':''}\n${f.action?`ぜひ本日から${f.action}を意識してください。`+'ご協力よろしくお願いします。':''}`,
+      aa:`${f.action||f.theme}について確認をお願いしていいですか？ ${f.attention?f.attention+'を意識して進めてもらえると助かります。':'一緒に確認していきましょう。'}`,
+      pa:`${f.theme||f.event}について相談したいです。${f.action?`${f.action}の観点で一緒に現場を確認してもらえますか？`:'状況確認を一緒にお願いできますか？'}`,
+      boss:`${f.theme||f.event}について報告します。${f.event?f.event+'。':''} ${f.impacts?.length>0?f.impacts.join('・')+'への影響があります。':''} ${f.action?f.action+'の対応を実施します。':''}`,
+      phrase:`${f.attention?`${f.attention}をいつも通り確認しながら`:f.theme}、安全に作業を進めましょう。`,
+    };
+    setResult(r);
+  };
+
+  return <div className="page">
+    <div className="section-title">📢 朝礼・AA共有メーカー</div>
+    {!result?<>
+      <div className="card">
+        <label>共有テーマ</label>
+        <input placeholder="例：通路確保、誤仕分け防止、Backlog対応" value={f.theme} onChange={set('theme')}/>
+        <label>起きた事象（任意）</label>
+        <textarea placeholder="例：通路上に箱が置かれ転倒リスクがあった" value={f.event} onChange={set('event')}/>
+        <div className="form-row">
+          <div>
+            <label>工程</label>
+            <select value={f.process} onChange={set('process')}><option value="">選択</option>{PROCESSES.map(p=><option key={p}>{p}</option>)}</select>
+          </div>
+          <div>
+            <label>対象</label>
+            <select value={f.target} onChange={set('target')}>{TARGETS.map(t=><option key={t}>{t}</option>)}</select>
+          </div>
+        </div>
+        <label>影響領域</label>
+        <div style={{display:'flex',gap:6,flexWrap:'wrap',margin:'4px 0'}}>
+          {IMPACTS.map(im=><button key={im} className={`btn btn-sm ${f.impacts.includes(im)?'btn-primary':'btn-gray'}`} onClick={()=>toggleImpact(im)}>{im}</button>)}
+        </div>
+        <label>今日から変えてほしい行動</label>
+        <input placeholder="例：箱は指定の一時置き場に置く" value={f.action} onChange={set('action')}/>
+        <label>注意してほしいポイント</label>
+        <input placeholder="例：通路上への仮置き、走り作業" value={f.attention} onChange={set('attention')}/>
+        <label>トーン</label>
+        <select value={f.tone} onChange={set('tone')}>{TONES.map(t=><option key={t}>{t}</option>)}</select>
+      </div>
+      <button className="btn btn-primary" style={{width:'100%'}} onClick={generate}>共有文を生成</button>
+    </>:<>
+      <button className="btn btn-gray btn-sm" style={{marginBottom:12}} onClick={()=>setResult(null)}>← 再入力</button>
+      {[
+        ['⚡ 10秒版','ten'],['📣 30秒版','thirty'],['🎤 1分版','sixty'],
+        ['👥 AA向け声かけ','aa'],['🤝 PA向け連携文','pa'],['📊 上司向け報告','boss'],['💬 使える一言','phrase']
+      ].map(([label,key])=><div key={key} className="card">
+        <div style={{fontWeight:700,fontSize:13,marginBottom:6}}>{label}</div>
+        <div style={{fontSize:13,lineHeight:1.7,color:'#374151',whiteSpace:'pre-wrap'}}>{result[key]}</div>
+        <div style={{marginTop:6}}><CopyBtn text={result[key]} label="コピー"/></div>
+      </div>)}
+    </>}
+  </div>;
+}
+
+// ===== REFLECTION =====
+function ReflectionTab({reflections,setReflections,setPhrases}){
+  const [view,setView]=useState('list');// list|form
+  const [f,setF]=useState({saw:'',noticed:'',struggled:'',terms:'',tomorrowCheck:''});
+  const [result,setResult]=useState(null);
+  const set=k=>e=>setF(p=>({...p,[k]:e.target.value}));
+
+  const generate=()=>{
+    const r={
+      learning:`今日は${f.noticed||f.saw}を経験し、${f.struggled?f.struggled+'という課題に直面しました。':''} ${f.terms?`「${f.terms}」という用語・概念を確認しました。`:''}`,
+      insight:f.noticed,
+      nextAction:f.tomorrowCheck?`明日は${f.tomorrowCheck}を確認します。`:'明日も安全・品質・Flowを意識して現場に臨みます。',
+      phrase:`${f.noticed||f.saw}から学んだこと：現場を見て、事実を確認し、改善につなげることが大切です。`,
+    };
+    const item={...f,...r,id:uid(),createdAt:new Date().toISOString()};
+    setReflections(p=>[item,...p]);
+    if(r.phrase) setPhrases(prev=>[{id:uid(),phrase:r.phrase,category:'振り返り回答',scene:'振り返りより',relatedLP:'Dive Deep',favorite:false},...prev]);
+    setResult(r);
+  };
+
+  if(view==='form') return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
+      <div className="section-title" style={{marginBottom:0}}>📅 今日の振り返り</div>
+      <button className="btn btn-gray btn-sm" onClick={()=>{setView('list');setResult(null)}}>← 戻る</button>
+    </div>
+    {!result?<><div className="card">
+      <label>今日見たこと・学んだこと</label>
+      <textarea placeholder="例：Backlogが増えた工程でPAと確認を行った" value={f.saw} onChange={set('saw')}/>
+      <label>気づいたこと</label>
+      <textarea placeholder="例：通路の荷物が増える前にPAへ相談する方が対応が早い" value={f.noticed} onChange={set('noticed')}/>
+      <label>困ったこと</label>
+      <textarea placeholder="例：詰まりの原因特定に時間がかかった" value={f.struggled} onChange={set('struggled')}/>
+      <label>聞いた用語・確認したこと</label>
+      <input placeholder="例：Stow Rate、HC配置" value={f.terms} onChange={set('terms')}/>
+      <label>明日確認したいこと</label>
+      <input placeholder="例：Pick & Stageの詰まりやすい時間帯" value={f.tomorrowCheck} onChange={set('tomorrowCheck')}/>
+    </div>
+    <button className="btn btn-primary" style={{width:'100%'}} onClick={()=>{if(!f.saw&&!f.noticed){alert('学んだことを入力してください');return};generate()}}>振り返りを保存</button>
+    </>:<>
+      <div className="alert alert-success">✅ 振り返りを保存しました</div>
+      {[['📚 今日の学び',result.learning],['💡 現場での気づき',result.insight],['➡️ 次回の行動',result.nextAction],['💬 使える一言',result.phrase]].map(([l,v])=>v&&<div key={l} className="card">
+        <div style={{fontWeight:700,fontSize:13,marginBottom:4}}>{l}</div>
+        <div style={{fontSize:13,lineHeight:1.6}}>{v}</div>
+        <CopyBtn text={v} label="コピー"/>
+      </div>)}
+    </>}
+  </div>;
+
+  return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+      <div className="section-title" style={{marginBottom:0}}>📅 振り返り</div>
+      <button className="btn btn-primary btn-sm" onClick={()=>{setF({saw:'',noticed:'',struggled:'',terms:'',tomorrowCheck:''});setResult(null);setView('form')}}>＋ 今日の振り返り</button>
+    </div>
+    {reflections.length===0&&<div className="empty"><div className="empty-icon">📅</div>振り返りを記録しましょう</div>}
+    {reflections.map(r=><div key={r.id} className="card">
+      <div style={{fontSize:12,color:'var(--gray)',marginBottom:4}}>{fmtDate(r.createdAt)}</div>
+      {r.saw&&<><div style={{fontSize:12,fontWeight:700,color:'var(--gray)'}}>今日見たこと</div><div style={{fontSize:13,marginBottom:4}}>{r.saw}</div></>}
+      {r.noticed&&<><div style={{fontSize:12,fontWeight:700,color:'var(--green)'}}>気づき</div><div style={{fontSize:13,marginBottom:4}}>{r.noticed}</div></>}
+      {r.tomorrowCheck&&<div style={{fontSize:12,color:'var(--accent)'}}>→ 明日：{r.tomorrowCheck}</div>}
+      <div className="action-row">
+        <button className="btn btn-danger btn-sm" onClick={()=>{if(window.confirm('削除?'))setReflections(p=>p.filter(x=>x.id!==r.id))}}>削除</button>
+      </div>
+    </div>)}
+  </div>;
+}
+
+// ===== PHRASES =====
+function PhrasesTab({phrases,setPhrases}){
+  const [filter,setFilter]=useState('');
+  const [catFilter,setCatFilter]=useState('');
+  const [favOnly,setFavOnly]=useState(false);
+  const [adding,setAdding]=useState(false);
+  const [newPhrase,setNewPhrase]=useState({phrase:'',category:'Safety',scene:'',relatedLP:'',favorite:false});
+
+  const filtered=useMemo(()=>phrases.filter(p=>{
+    if(favOnly&&!p.favorite)return false;
+    if(catFilter&&p.category!==catFilter)return false;
+    const kw=filter.toLowerCase();
+    if(!kw)return true;
+    return [p.phrase,p.scene,p.relatedLP].some(f=>f&&f.toLowerCase().includes(kw));
+  }),[phrases,filter,catFilter,favOnly]);
+
+  return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+      <div className="section-title" style={{marginBottom:0}}>💬 使える一言</div>
+      <button className="btn btn-primary btn-sm" onClick={()=>setAdding(!adding)}>＋ 追加</button>
+    </div>
+    {adding&&<div className="card">
+      <label>一言 *</label><input value={newPhrase.phrase} onChange={e=>setNewPhrase(p=>({...p,phrase:e.target.value}))} placeholder="使える一言"/>
+      <label>カテゴリ</label><select value={newPhrase.category} onChange={e=>setNewPhrase(p=>({...p,category:e.target.value}))}>{CATS.map(c=><option key={c}>{c}</option>)}</select>
+      <label>使う場面</label><input value={newPhrase.scene} onChange={e=>setNewPhrase(p=>({...p,scene:e.target.value}))} placeholder="例：朝礼、報告"/>
+      <label>関連LP</label><input value={newPhrase.relatedLP} onChange={e=>setNewPhrase(p=>({...p,relatedLP:e.target.value}))} placeholder="例：Ownership"/>
+      <div style={{display:'flex',gap:8,marginTop:10}}>
+        <button className="btn btn-primary btn-sm" onClick={()=>{if(!newPhrase.phrase)return;setPhrases(p=>[{...newPhrase,id:uid(),favorite:false},...p]);setAdding(false);setNewPhrase({phrase:'',category:'Safety',scene:'',relatedLP:'',favorite:false})}}>保存</button>
+        <button className="btn btn-gray btn-sm" onClick={()=>setAdding(false)}>キャンセル</button>
+      </div>
+    </div>}
+    <div className="search-box">
+      <span className="search-icon">🔍</span>
+      <input placeholder="検索..." value={filter} onChange={e=>setFilter(e.target.value)}/>
+    </div>
+    <div className="tab-scroll">
+      <button className={`tab-btn${catFilter===''?' active':''}`} onClick={()=>setCatFilter('')}>すべて</button>
+      {CATS.map(c=><button key={c} className={`tab-btn${catFilter===c?' active':''}`} onClick={()=>setCatFilter(c)}>{c}</button>)}
+    </div>
+    <button className={`btn btn-sm ${favOnly?'btn-primary':'btn-gray'}`} style={{marginBottom:10}} onClick={()=>setFavOnly(!favOnly)}>⭐ お気に入りのみ</button>
+    {filtered.length===0&&<div className="empty"><div className="empty-icon">💬</div>一言を追加しましょう</div>}
+    {filtered.map(p=><div key={p.id} className="card" style={{borderLeft:'4px solid #f59e0b'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        <div style={{flex:1,fontSize:14,fontWeight:600,color:'#1e3a5f',lineHeight:1.5}}>「{p.phrase}」</div>
+        <button style={{background:'none',border:'none',cursor:'pointer',fontSize:18,color:p.favorite?'#f59e0b':'#d1d5db',flexShrink:0}} onClick={()=>setPhrases(prev=>prev.map(x=>x.id===p.id?{...x,favorite:!x.favorite}:x))}>★</button>
+      </div>
+      <div style={{fontSize:11,color:'var(--gray)',marginTop:4}}>
+        <Badge text={p.category}/>{p.scene&&<span style={{marginLeft:4}}>📍{p.scene}</span>}{p.relatedLP&&<span style={{marginLeft:4}}>🏷{p.relatedLP}</span>}
+      </div>
+      <div className="action-row">
+        <CopyBtn text={p.phrase}/>
+        <button className="btn btn-danger btn-sm" onClick={()=>{if(window.confirm('削除?'))setPhrases(prev=>prev.filter(x=>x.id!==p.id))}}>削除</button>
+      </div>
+    </div>)}
+  </div>;
+}
+
+// ===== SEARCH =====
+function SearchTab({notes,qa,phrases,fivewhys,improvements}){
+  const [query,setQuery]=useState('');
+  const results=useMemo(()=>{
+    if(!query||query.length<2)return{notes:[],qa:[],phrases:[],fivewhys:[]};
+    const kw=query.toLowerCase();
+    return {
+      notes:notes.filter(n=>[n.term,n.title,n.summary,n.fieldMeaning,n.usefulPhrase,n.experienceNote].some(f=>f&&f.toLowerCase().includes(kw))),
+      qa:qa.filter(q=>[q.question,q.answer].some(f=>f&&f.toLowerCase().includes(kw))),
+      phrases:phrases.filter(p=>p.phrase?.toLowerCase().includes(kw)),
+      fivewhys:fivewhys.filter(w=>[w.event,w.rootCause,w.correctiveAction].some(f=>f&&f.toLowerCase().includes(kw))),
+    };
+  },[query,notes,qa,phrases,fivewhys]);
+  const total=Object.values(results).reduce((s,a)=>s+a.length,0);
+  return <div className="page">
+    <div className="section-title">🔍 検索</div>
+    <div className="search-box">
+      <span className="search-icon">🔍</span>
+      <input placeholder="キーワードを入力（2文字以上）" value={query} onChange={e=>setQuery(e.target.value)} autoFocus/>
+    </div>
+    {query.length>=2&&<div style={{fontSize:12,color:'var(--gray)',marginBottom:8}}>{total}件ヒット</div>}
+    {results.notes.map(n=><div key={n.id} className="card">
+      <div style={{fontSize:11,fontWeight:700,color:'var(--accent)'}}>📒 ノート</div>
+      <div style={{fontWeight:700}}>{n.term||n.title}</div>
+      <div style={{fontSize:13,color:'#475569'}}>{n.summary}</div>
+    </div>)}
+    {results.qa.map(q=><div key={q.id} className="card">
+      <div style={{fontSize:11,fontWeight:700,color:'#7c3aed'}}>🎯 Q&A</div>
+      <div style={{fontWeight:700,fontSize:13}}>{q.question}</div>
+      <div style={{fontSize:13,color:'#475569'}}>{q.answer.slice(0,80)}...</div>
+    </div>)}
+    {results.phrases.map(p=><div key={p.id} className="card">
+      <div style={{fontSize:11,fontWeight:700,color:'#f59e0b'}}>💬 一言</div>
+      <div style={{fontSize:14,fontStyle:'italic'}}>「{p.phrase}」</div>
+    </div>)}
+    {results.fivewhys.map(w=><div key={w.id} className="card">
+      <div style={{fontSize:11,fontWeight:700,color:'#10b981'}}>🔍 5Why</div>
+      <div style={{fontWeight:700,fontSize:13}}>{w.event}</div>
+    </div>)}
+    {query.length>=2&&total===0&&<div className="empty"><div className="empty-icon">🔍</div>「{query}」の検索結果がありません</div>}
+  </div>;
+}
+
+// ===== SETTINGS =====
+function SettingsTab({notes,qa,phrases,fivewhys,improvements,reflections,setNotes,setQA,setPhrases,setFivewhys,setImprovements,setReflections}){
+  const exportAll=()=>{
+    const data={notes,qa,phrases,fivewhys,improvements,reflections,exportedAt:new Date().toISOString()};
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`ds-musou-note-${Date.now()}.json`;a.click();
+  };
+  const exportCSV=(arr,filename)=>{
+    if(!arr.length)return;
+    const keys=Object.keys(arr[0]);
+    const csv=[keys.join(','),...arr.map(r=>keys.map(k=>`"${(r[k]||'').toString().replace(/"/g,'""')}"`).join(','))].join('\n');
+    const blob=new Blob(['﻿'+csv],{type:'text/csv'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${filename}-${Date.now()}.csv`;a.click();
+  };
+  const importFile=()=>{
+    const input=document.createElement('input');input.type='file';input.accept='.json';
+    input.onchange=e=>{
+      const file=e.target.files[0];if(!file)return;
+      const reader=new FileReader();
+      reader.onload=ev=>{
+        try{
+          const data=JSON.parse(ev.target.result);
+          if(window.confirm('データをインポートします。既存データは上書きされます。続けますか？')){
+            if(data.notes)setNotes(data.notes);
+            if(data.qa)setQA(data.qa);
+            if(data.phrases)setPhrases(data.phrases);
+            if(data.fivewhys)setFivewhys(data.fivewhys);
+            if(data.improvements)setImprovements(data.improvements);
+            if(data.reflections)setReflections(data.reflections);
+            alert('インポート完了しました');
+          }
+        }catch{alert('ファイルの読み込みに失敗しました')}
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  };
+  const loadSample=()=>{
+    if(window.confirm('サンプルデータを再読み込みします。現在のノートに追加されます。続けますか？')){
+      setNotes(p=>{const ids=new Set(p.map(n=>n.id));return[...p,...SAMPLE_NOTES.filter(n=>!ids.has(n.id))];});
+      setQA(p=>{const ids=new Set(p.map(q=>q.id));return[...p,...SAMPLE_QA.filter(q=>!ids.has(q.id))];});
+      setPhrases(p=>{const ids=new Set(p.map(x=>x.id));return[...p,...SAMPLE_PHRASES.filter(x=>!ids.has(x.id))];});
+      alert('サンプルデータを追加しました');
+    }
+  };
+  const resetAll=()=>{
+    if(window.confirm('全データを削除します。この操作は取り消せません。本当に削除しますか？')){
+      [SK.notes,SK.qa,SK.phrases,SK.fivewhys,SK.improvements,SK.reflections].forEach(k=>localStorage.removeItem(k));
+      setNotes([]);setQA([]);setPhrases([]);setFivewhys([]);setImprovements([]);setReflections([]);
+      alert('リセットしました');
+    }
+  };
+  return <div className="page">
+    <div className="section-title">⚙️ 設定</div>
+    <div className="card">
+      <div className="card-title">📤 エクスポート</div>
+      <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+        <button className="btn btn-outline btn-sm" onClick={exportAll}>💾 全データをJSONで保存</button>
+        <button className="btn btn-outline btn-sm" onClick={()=>exportCSV(notes,'notes')}>📒 ノートCSV</button>
+        <button className="btn btn-outline btn-sm" onClick={()=>exportCSV(qa,'qa')}>🎯 Q&A CSV</button>
+        <button className="btn btn-outline btn-sm" onClick={()=>exportCSV(phrases,'phrases')}>💬 一言CSV</button>
+      </div>
+    </div>
+    <div className="card">
+      <div className="card-title">📥 インポート</div>
+      <button className="btn btn-outline btn-sm" onClick={importFile}>📂 JSONファイルをインポート</button>
+      <div style={{fontSize:12,color:'var(--gray)',marginTop:6}}>※エクスポートしたJSONファイルをインポートできます</div>
+    </div>
+    <div className="card">
+      <div className="card-title">🔄 サンプルデータ</div>
+      <button className="btn btn-outline btn-sm" onClick={loadSample}>サンプルデータを再読み込み</button>
+    </div>
+    <div className="card">
+      <div className="card-title" style={{color:'var(--red)'}}>⚠️ データリセット</div>
+      <div style={{fontSize:13,color:'var(--gray)',marginBottom:8}}>全データを削除します。必ずバックアップを取ってから実行してください。</div>
+      <button className="btn btn-danger btn-sm" onClick={resetAll}>全データを削除</button>
+    </div>
+    <div className="card">
+      <div className="card-title">ℹ️ このアプリについて</div>
+      <div style={{fontSize:13,color:'#475569',lineHeight:1.7}}>
+        <strong>AMAZON トレーニングノート</strong><br/>
+        Amazon DSで働く新任エリアマネージャーのための学習・実務支援ツール。<br/>
+        データはすべてブラウザのlocalStorageに保存されます。<br/><br/>
+        <strong>使い始め方：</strong><br/>
+        1. ノートタブで用語・学びを記録<br/>
+        2. Q&Aで復習モードを活用<br/>
+        3. AI相談でプロンプトを生成<br/>
+        4. 5Whyで事象を深掘り<br/>
+        5. 改善アクションで対策を整理<br/>
+        6. 朝礼共有で現場に落とし込む
+      </div>
+    </div>
+  </div>;
+}
+
+// ===== NAVIGATION ICONS =====
+const NAV_ITEMS=[
+  {key:'dashboard',label:'ホーム',icon:'🏠'},
+  {key:'notes',label:'ノート',icon:'📒'},
+  {key:'qa',label:'Q&A',icon:'🎯'},
+  {key:'ai',label:'AI相談',icon:'🤖'},
+  {key:'fivewhy',label:'5Why',icon:'🔍'},
+  {key:'improvement',label:'改善',icon:'🛠'},
+  {key:'morning',label:'朝礼',icon:'📢'},
+  {key:'reflection',label:'振返り',icon:'📅'},
+  {key:'phrases',label:'一言',icon:'💬'},
+  {key:'search',label:'検索',icon:'🔍'},
+  {key:'settings',label:'設定',icon:'⚙️'},
+];
+
+// Bottom nav shows 5 items + more
+const MAIN_NAV=[
+  {key:'dashboard',label:'ホーム',icon:'🏠'},
+  {key:'notes',label:'ノート',icon:'📒'},
+  {key:'qa',label:'Q&A',icon:'🎯'},
+  {key:'ai',label:'AI相談',icon:'🤖'},
+  {key:'more',label:'メニュー',icon:'☰'},
+];
+
+// ===== MAIN APP =====
+function App(){
+  const [tab,setTab]=useState('dashboard');
+  const [showMenu,setShowMenu]=useState(false);
+  const [notes,setNotesRaw]=useState(()=>load(SK.notes,SAMPLE_NOTES));
+  const [qa,setQARaw]=useState(()=>load(SK.qa,SAMPLE_QA));
+  const [phrases,setPhrasesRaw]=useState(()=>load(SK.phrases,SAMPLE_PHRASES));
+  const [fivewhys,setFivewhysRaw]=useState(()=>load(SK.fivewhys,[]));
+  const [improvements,setImprovementsRaw]=useState(()=>load(SK.improvements,[]));
+  const [reflections,setReflectionsRaw]=useState(()=>load(SK.reflections,[]));
+
+  const setNotes=v=>{setNotesRaw(v);save(SK.notes,typeof v==='function'?v(notes):v)};
+  const setQA=v=>{setQARaw(v);save(SK.qa,typeof v==='function'?v(qa):v)};
+  const setPhrases=v=>{setPhrasesRaw(v);save(SK.phrases,typeof v==='function'?v(phrases):v)};
+  const setFivewhys=v=>{setFivewhysRaw(v);save(SK.fivewhys,typeof v==='function'?v(fivewhys):v)};
+  const setImprovements=v=>{setImprovementsRaw(v);save(SK.improvements,typeof v==='function'?v(improvements):v)};
+  const setReflections=v=>{setReflectionsRaw(v);save(SK.reflections,typeof v==='function'?v(reflections):v)};
+
+  // persist on change
+  useEffect(()=>save(SK.notes,notes),[notes]);
+  useEffect(()=>save(SK.qa,qa),[qa]);
+  useEffect(()=>save(SK.phrases,phrases),[phrases]);
+  useEffect(()=>save(SK.fivewhys,fivewhys),[fivewhys]);
+  useEffect(()=>save(SK.improvements,improvements),[improvements]);
+  useEffect(()=>save(SK.reflections,reflections),[reflections]);
+
+  const goTab=t=>{setTab(t);setShowMenu(false);window.scrollTo(0,0)};
+
+  const tabLabel = NAV_ITEMS.find(n=>n.key===tab);
+
+  return <>
+    <div className="app-header">
+      <h1>AMAZON トレーニングノート</h1>
+      <span style={{fontSize:13,opacity:.8}}>{tabLabel?.icon} {tabLabel?.label}</span>
+    </div>
+
+    {tab==='dashboard'&&<Dashboard notes={notes} qa={qa} phrases={phrases} fivewhys={fivewhys} improvements={improvements} reflections={reflections}/>}
+    {tab==='notes'&&<NotesTab notes={notes} setNotes={setNotes} setPhrases={setPhrases}/>}
+    {tab==='qa'&&<QATab qa={qa} setQA={setQA} notes={notes}/>}
+    {tab==='ai'&&<AIConsultTab consults={[]} setConsults={()=>{}}/>}
+    {tab==='fivewhy'&&<FiveWhyTab fivewhys={fivewhys} setFivewhys={setFivewhys}/>}
+    {tab==='improvement'&&<ImprovementTab improvements={improvements} setImprovements={setImprovements} setPhrases={setPhrases}/>}
+    {tab==='morning'&&<MorningBriefTab/>}
+    {tab==='reflection'&&<ReflectionTab reflections={reflections} setReflections={setReflections} setPhrases={setPhrases}/>}
+    {tab==='phrases'&&<PhrasesTab phrases={phrases} setPhrases={setPhrases}/>}
+    {tab==='search'&&<SearchTab notes={notes} qa={qa} phrases={phrases} fivewhys={fivewhys} improvements={improvements}/>}
+    {tab==='settings'&&<SettingsTab notes={notes} qa={qa} phrases={phrases} fivewhys={fivewhys} improvements={improvements} reflections={reflections} setNotes={setNotes} setQA={setQA} setPhrases={setPhrases} setFivewhys={setFivewhys} setImprovements={setImprovements} setReflections={setReflections}/>}
+
+    {/* Menu modal */}
+    {showMenu&&<div className="modal-overlay" onClick={()=>setShowMenu(false)}>
+      <div className="modal" onClick={e=>e.stopPropagation()}>
+        <div className="modal-title">メニュー</div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+          {NAV_ITEMS.filter(n=>n.key!=='dashboard').map(n=><button key={n.key} className="btn btn-outline" style={{justifyContent:'flex-start',gap:8}} onClick={()=>goTab(n.key)}>
+            <span style={{fontSize:18}}>{n.icon}</span>{n.label}
+          </button>)}
+        </div>
+      </div>
+    </div>}
+
+    <nav className="bottom-nav">
+      {MAIN_NAV.map(n=><button key={n.key} className={tab===n.key?'active':''} onClick={()=>n.key==='more'?setShowMenu(!showMenu):goTab(n.key)}>
+        <span style={{fontSize:20}}>{n.icon}</span>
+        <span>{n.label}</span>
+      </button>)}
+    </nav>
+  </>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
