@@ -1187,6 +1187,83 @@ function SettingsTab({notes,qa,phrases,fivewhys,improvements,reflections,setNote
   </div>;
 }
 
+// ===== OLP DATA =====
+const OLP_DATA=[
+  {id:'olp1',name:'Customer Obsession',jp:'カスタマーオブセッション',tagline:'リーダーはまずお客様起点で考え、お客様から信頼・愛顧を勝ち取る行動をする',detail:'リーダーはお客様を起点に考え、行動します。競合他社への注目も必要ですが、何よりも顧客へのこだわりを持ち続けることが大切です。',dsExample:'現場ではアソシエイトではなくエンドユーザー（配送先のお客様）を意識。Dispatch遅延はお客様体験に直結する。',keywords:['顧客第一','信頼','サービス品質'],color:'3b82f6'},
+  {id:'olp2',name:'Ownership',jp:'オーナーシップ',tagline:'リーダーはオーナーです。短期的な結果だけでなく長期的な視点で考え、「それは自分の仕事ではない」と言わない',detail:'オーナーとして行動し、自分のチームを超えて組織全体のために行動します。短期的な犠牲を払っても長期的な価値を優先します。',dsExample:'Backlogが増えたとき、「自分の担当ではない」ではなく原因を確認し改善まで関わる。改善アクションの完了確認まで責任を持つ。',keywords:['主体性','長期視点','責任'],color:'10b981'},
+  {id:'olp3',name:'Invent and Simplify',jp:'インベントアンドシンプリファイ',tagline:'リーダーはチームにイノベーションと創造を求め、常により簡単な方法を探す',detail:'新しいアイデアを求め、どこからでも良いアイデアを取り入れます。シンプルさを追求し、複雑さを排除します。',dsExample:'朝礼を毎回同じにしない。気づきをパターン化してノートに記録し、より良い伝え方を常に試みる。',keywords:['改善','シンプル化','創意工夫'],color:'8b5cf6'},
+  {id:'olp4',name:'Are Right, A Lot',jp:'アーライトアロット',tagline:'リーダーは正しい判断を数多く下す。強い判断力と経験を持ち、多様な視点を取り入れる',detail:'優れた判断力と直感を持ちます。多様な視点を積極的に求め、自分の信念を振り返る意欲を持ちます。',dsExample:'5WhyでRoot Causeを確認してから対策を打つ。思い込みで判断せず現場で事実を確認する。',keywords:['判断力','事実確認','多様な視点'],color:'f59e0b'},
+  {id:'olp5',name:'Learn and Be Curious',jp:'ラーンアンドビーキュリアス',tagline:'リーダーは常に学び、自己改善しようとする。新しい可能性に対して好奇心旺盛に探求する',detail:'自分の知識を常にアップデートし、学ぶことをやめません。新しい可能性を常に探求します。',dsExample:'このトレーニングノート自体がこのLPの実践。現場で聞いた用語をすぐメモし、理解度を上げ続ける。',keywords:['学習','自己成長','好奇心'],color:'06b6d4'},
+  {id:'olp6',name:'Hire and Develop the Best',jp:'ハイアーアンドデベロップザベスト',tagline:'リーダーは優秀な人材を見極め、育成する。コーチングや指導を通じてリーダーを育てる',detail:'採用基準を高く維持し、自分自身や他者の育成に責任を持ちます。強みを認識し、積極的にコーチングします。',dsExample:'AAの「できなかった」を責めずに「どうすれば次にできるか」を一緒に考える。成長を承認する声かけが大切。',keywords:['人材育成','コーチング','承認'],color:'ec4899'},
+  {id:'olp7',name:'Insist on the Highest Standards',jp:'インシストオンザハイエストスタンダーズ',tagline:'リーダーは常に高い基準を持ち、妥協しない。問題は発生前に解決し、品質を常に求める',detail:'継続的に高い基準を求め、バーを引き上げ続けます。欠陥が広がる前に問題を修正します。',dsExample:'Safety基準を天候・物量・人員に関わらず常に一定に保つ。標準作業から外れた時に「それでいいか」を問い直す。',keywords:['品質','Safety','標準遵守'],color:'ef4444'},
+  {id:'olp8',name:'Think Big',jp:'シンクビッグ',tagline:'小さく考えることは自己達成予言になる。大胆な方向性を持ち、異なる形で問題を解決する',detail:'大胆な方向性を作り出し、伝えることでリザルトを促します。違う考え方をするよう促します。',dsExample:'「今日の現場を乗り切る」だけでなく「来週のためにどう仕組みを変えるか」まで考える視点。',keywords:['長期視点','ビジョン','大胆さ'],color:'7c3aed'},
+  {id:'olp9',name:'Bias for Action',jp:'バイアスフォーアクション',tagline:'スピードはビジネスに不可欠。多くの決断は後戻りできる。まず行動して学ぶ文化を重視する',detail:'リスクを計算した上でのスピードある行動を重視します。完璧を待たずに行動し、後から学びます。',dsExample:'Backlogが増えている時、「確認してから」と止まらず、まず暫定対応を取りながら原因を調べる。',keywords:['迅速行動','暫定対応','スピード'],color:'f97316'},
+  {id:'olp10',name:'Frugality',jp:'フルーガリティ',tagline:'少ないリソースでより多くのことを達成する。制約は創意工夫を生む',detail:'支出に対して制約的でいることで、機知に富み、自立し、創造的になります。スタッフ数、予算、費用を増やすことはそれ自体では美徳ではありません。',dsExample:'追加HC要請の前に、既存の人員配置・動線・手順で改善できることがないか先に確認する。',keywords:['効率','リソース最適化','創意工夫'],color:'84cc16'},
+  {id:'olp11',name:'Earn Trust',jp:'アーントラスト',tagline:'リーダーは注意深く聞き、率直に話し、人を尊重する。自己批判的であり、過ちを認める',detail:'他者の言葉に耳を傾け、率直に話し、相手を尊重します。自己批判的であり、たとえ居心地が悪くても最善でないことを認めます。',dsExample:'「人を咎めず事を正す」がこのLPの現場実践。AAのミスを責めず、起きた事実と仕組みに向き合う。',keywords:['信頼','傾聴','誠実さ'],color:'0ea5e9'},
+  {id:'olp12',name:'Dive Deep',jp:'ダイブディープ',tagline:'リーダーは全ての業務に関与し、事実に基づいて管理する。詳細に注意を払い、変則は尻尾を引く',detail:'全レベルで関与し続け、詳細を熟知し、統計と個別事例の不一致があれば疑問を持ちます。事実に基づいて確認します。',dsExample:'「Backlogが増えている」という数字だけでなく、「どの工程で・なぜ」まで現場で確認する。5Whyの基礎。',keywords:['現場確認','事実ベース','深掘り'],color:'1d4ed8'},
+  {id:'olp13',name:'Have Backbone; Disagree and Commit',jp:'バックボーンを持つ・異議を唱え、コミットする',tagline:'同意しない場合は丁重に反論する。確信がある場合は粘り強く立場を守る。しかし決定に従ってコミットする',detail:'賛成できない場合でも丁重に異議を唱えます。社会的に調和を保つためだけの妥協はしません。しかし一度決定したらコミットします。',dsExample:'上司の指示に疑問があれば根拠を持って意見を言う。しかし決定後は全力でコミットし、チームに伝える。',keywords:['誠実','意見表明','コミット'],color:'dc2626'},
+  {id:'olp14',name:'Deliver Results',jp:'デリバーリザルツ',tagline:'ビジネスの重要なインプット・アウトカムに集中し、基準を超えた成果を出す。挫折しても立ち上がる',detail:'重要なインプットに集中し、適切な品質とタイムリーに成果を届けます。挫折しても立ち向かいます。',dsExample:'1日の終わりにVolumeを処理してDispatchに間に合わせること。数字で結果を示し、振り返りで次に活かす。',keywords:['成果','達成','粘り強さ'],color:'059669'},
+];
+
+// ===== OLP TAB =====
+function OLPTab(){
+  const [selected,setSelected]=useState(null);
+  const [filter,setFilter]=useState('');
+
+  const filtered=useMemo(()=>OLP_DATA.filter(o=>{
+    const kw=filter.toLowerCase();
+    if(!kw)return true;
+    return [o.name,o.jp,o.tagline,o.detail,o.dsExample].some(f=>f&&f.toLowerCase().includes(kw));
+  }),[filter]);
+
+  if(selected) return <div className="page">
+    <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
+      <button className="btn btn-gray btn-sm" onClick={()=>setSelected(null)}>← 戻る</button>
+      <CopyBtn text={`【${selected.name}】${selected.jp}\n\n${selected.tagline}\n\n${selected.detail}\n\n【DSでの実践例】${selected.dsExample}`} label="コピー"/>
+    </div>
+    <div className="card" style={{borderTop:`4px solid #${selected.color}`}}>
+      <div style={{display:'inline-block',background:`#${selected.color}20`,border:`1px solid #${selected.color}`,borderRadius:6,padding:'2px 10px',fontSize:12,fontWeight:700,color:`#${selected.color}`,marginBottom:8}}>{selected.keywords.join(' / ')}</div>
+      <div style={{fontSize:20,fontWeight:800,color:'var(--navy)',marginBottom:2}}>{selected.name}</div>
+      <div style={{fontSize:14,color:'var(--gray)',marginBottom:12}}>{selected.jp}</div>
+      <div style={{background:'var(--light)',borderLeft:`4px solid #${selected.color}`,padding:'10px 14px',borderRadius:'0 8px 8px 0',fontSize:13,fontStyle:'italic',lineHeight:1.7,color:'#1e3a5f',marginBottom:12}}>
+        「{selected.tagline}」
+      </div>
+      <div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginBottom:4}}>📖 意味</div>
+      <div style={{fontSize:13,lineHeight:1.7,color:'#374151',marginBottom:12}}>{selected.detail}</div>
+      <div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginBottom:4}}>🏭 DSでの実践例</div>
+      <div style={{background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:8,padding:'10px 12px',fontSize:13,lineHeight:1.7,color:'#065f46'}}>{selected.dsExample}</div>
+    </div>
+    <div className="card">
+      <div className="card-title" style={{fontSize:14}}>💬 研修・面談で使える一言</div>
+      <div className="note-phrase">「{selected.tagline}」</div>
+      <div style={{marginTop:6,display:'flex',gap:6}}>
+        <CopyBtn text={selected.tagline} label="タグライン"/>
+        <CopyBtn text={`${selected.name}（${selected.jp}）：${selected.dsExample}`} label="DS実践例"/>
+      </div>
+    </div>
+  </div>;
+
+  return <div className="page">
+    <div className="section-title">📌 Our Leadership Principles</div>
+    <div className="alert alert-info" style={{marginBottom:12}}>全14のOLPはAmazonの行動・判断の基準です。ノート・5Why・改善の際に関連するOLPを意識しましょう。</div>
+    <div className="search-box" style={{marginBottom:12}}>
+      <span className="search-icon">🔍</span>
+      <input placeholder="キーワード検索..." value={filter} onChange={e=>setFilter(e.target.value)}/>
+    </div>
+    {filtered.map(o=><div key={o.id} className="card" style={{borderLeft:`4px solid #${o.color}`,cursor:'pointer'}} onClick={()=>setSelected(o)}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        <div>
+          <div style={{fontSize:14,fontWeight:700,color:'var(--navy)'}}>{o.name}</div>
+          <div style={{fontSize:12,color:'var(--gray)',marginBottom:4}}>{o.jp}</div>
+        </div>
+        <div style={{fontSize:11}}>›</div>
+      </div>
+      <div style={{fontSize:12,color:'#475569',lineHeight:1.5}}>{o.tagline}</div>
+      <div style={{marginTop:6}}>{o.keywords.map(k=><span key={k} className="tag">{k}</span>)}</div>
+    </div>)}
+  </div>;
+}
+
 // ===== NAVIGATION ICONS =====
 const NAV_ITEMS=[
   {key:'dashboard',label:'ホーム',icon:'🏠'},
@@ -1198,6 +1275,7 @@ const NAV_ITEMS=[
   {key:'morning',label:'朝礼',icon:'📢'},
   {key:'reflection',label:'振返り',icon:'📅'},
   {key:'phrases',label:'一言',icon:'💬'},
+  {key:'olp',label:'OLP',icon:'📌'},
   {key:'search',label:'検索',icon:'🔍'},
   {key:'settings',label:'設定',icon:'⚙️'},
 ];
@@ -1256,6 +1334,7 @@ function App(){
     {tab==='morning'&&<MorningBriefTab/>}
     {tab==='reflection'&&<ReflectionTab reflections={reflections} setReflections={setReflections} setPhrases={setPhrases}/>}
     {tab==='phrases'&&<PhrasesTab phrases={phrases} setPhrases={setPhrases}/>}
+    {tab==='olp'&&<OLPTab/>}
     {tab==='search'&&<SearchTab notes={notes} qa={qa} phrases={phrases} fivewhys={fivewhys} improvements={improvements}/>}
     {tab==='settings'&&<SettingsTab notes={notes} qa={qa} phrases={phrases} fivewhys={fivewhys} improvements={improvements} reflections={reflections} setNotes={setNotes} setQA={setQA} setPhrases={setPhrases} setFivewhys={setFivewhys} setImprovements={setImprovements} setReflections={setReflections}/>}
 
