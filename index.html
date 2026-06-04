@@ -4,6 +4,39 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AMAZON トレーニングノート</title>
+<script>
+// PIN protection - runs before React loads
+(function(){
+  const STORAGE_KEY='dsn_pin_ok';
+  const CORRECT='1234'; // change this PIN
+  if(sessionStorage.getItem(STORAGE_KEY)==='1')return;
+  document.addEventListener('DOMContentLoaded',function(){
+    const overlay=document.createElement('div');
+    overlay.id='pin-overlay';
+    overlay.innerHTML=`<div style="position:fixed;inset:0;background:#1e3a5f;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:16px;font-family:-apple-system,sans-serif">
+      <div style="color:#fff;font-size:22px;font-weight:800;letter-spacing:1px">📋 AMAZON<br>トレーニングノート</div>
+      <div style="color:#93c5fd;font-size:14px;margin-bottom:8px">PINを入力してください</div>
+      <input id="pin-input" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]*"
+        style="width:160px;padding:14px;border-radius:10px;border:2px solid #3b82f6;font-size:28px;text-align:center;letter-spacing:12px;background:#fff;color:#1e293b;outline:none"
+        placeholder="••••"/>
+      <div id="pin-error" style="color:#ef4444;font-size:13px;min-height:20px"></div>
+      <button id="pin-btn" style="padding:12px 32px;background:#3b82f6;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer">ログイン</button>
+    </div>`;
+    document.body.appendChild(overlay);
+    const input=document.getElementById('pin-input');
+    const btn=document.getElementById('pin-btn');
+    const err=document.getElementById('pin-error');
+    function tryPin(){
+      if(input.value===CORRECT){sessionStorage.setItem(STORAGE_KEY,'1');overlay.remove()}
+      else{err.textContent='PINが違います。もう一度入力してください。';input.value='';input.focus()}
+    }
+    btn.addEventListener('click',tryPin);
+    input.addEventListener('keydown',e=>{if(e.key==='Enter')tryPin()});
+    input.addEventListener('input',e=>{if(e.target.value.length===4)tryPin()});
+    setTimeout(()=>input.focus(),100);
+  });
+})();
+</script>
 <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
