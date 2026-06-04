@@ -8,7 +8,7 @@
 // PIN protection - runs before React loads
 (function(){
   const STORAGE_KEY='dsn_pin_ok';
-  const CORRECT='1234'; // change this PIN
+  const CORRECT='0321'; // change this PIN
   if(sessionStorage.getItem(STORAGE_KEY)==='1')return;
   document.addEventListener('DOMContentLoaded',function(){
     const overlay=document.createElement('div');
