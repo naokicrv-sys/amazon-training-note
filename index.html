@@ -212,11 +212,81 @@ function CopyBtn({text,label}){
 // ===== DASHBOARD =====
 function Dashboard({notes,qa,phrases,fivewhys,improvements,reflections}){
   const lowU = notes.filter(n=>n.understanding<=2);
-  const favPhrases = phrases.filter(p=>p.favorite);
-  const today = new Date().toLocaleDateString('ja-JP');
   const todayPhrase = phrases[Math.floor(new Date().getDate()%Math.max(phrases.length,1))];
+
+  // 今日の学習データ
+  const todayStr = new Date().toDateString();
+  const todayNotes = notes.filter(n=>new Date(n.createdAt).toDateString()===todayStr);
+  const todayUpdated = notes.filter(n=>n.id&&new Date(n.updatedAt).toDateString()===todayStr&&new Date(n.createdAt).toDateString()!==todayStr);
+  const todayQA = qa.filter(q=>q.lastReviewed&&new Date(q.lastReviewed).toDateString()===todayStr);
+  const masteredNotes = notes.filter(n=>n.understanding>=4);
+
+  // 週次の累積（直近7日）
+  const weeklyData = [...Array(7)].map((_,i)=>{
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const ds=d.toDateString();
+    return {label:i===0?'今日':i===1?'昨日':`${d.getMonth()+1}/${d.getDate()}`, count:notes.filter(n=>new Date(n.createdAt).toDateString()===ds).length};
+  }).reverse();
+  const maxCount=Math.max(...weeklyData.map(d=>d.count),1);
+
   return <div className="page">
     <div className="section-title">📊 ダッシュボード</div>
+
+    {/* 今日の学習サマリー */}
+    <div className="card" style={{borderTop:'4px solid #3b82f6',marginBottom:12}}>
+      <div style={{fontWeight:700,fontSize:14,color:'var(--navy)',marginBottom:10}}>📅 今日の学習 — {new Date().toLocaleDateString('ja-JP',{month:'numeric',day:'numeric',weekday:'short'})}</div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8,marginBottom:10}}>
+        <div style={{textAlign:'center',background:'#eff6ff',borderRadius:8,padding:'8px 4px'}}>
+          <div style={{fontSize:26,fontWeight:800,color:'var(--accent)'}}>{todayNotes.length}</div>
+          <div style={{fontSize:11,color:'var(--gray)'}}>新規ノート</div>
+        </div>
+        <div style={{textAlign:'center',background:'#f0fdf4',borderRadius:8,padding:'8px 4px'}}>
+          <div style={{fontSize:26,fontWeight:800,color:'var(--green)'}}>{todayQA.length}</div>
+          <div style={{fontSize:11,color:'var(--gray)'}}>Q&A復習</div>
+        </div>
+        <div style={{textAlign:'center',background:'#fef9c3',borderRadius:8,padding:'8px 4px'}}>
+          <div style={{fontSize:26,fontWeight:800,color:'#d97706'}}>{masteredNotes.length}</div>
+          <div style={{fontSize:11,color:'var(--gray)'}}>習得済み★4+</div>
+        </div>
+      </div>
+
+      {/* 今日覚えた用語 */}
+      {todayNotes.length>0&&<>
+        <div style={{fontSize:12,fontWeight:700,color:'var(--navy)',marginBottom:6}}>✅ 今日覚えた用語</div>
+        {todayNotes.map(n=><div key={n.id} style={{display:'flex',alignItems:'center',gap:6,padding:'5px 0',borderBottom:'1px solid #f1f5f9'}}>
+          <Badge text={n.category}/>
+          <span style={{fontWeight:600,fontSize:13,flex:1}}>{n.term||n.title}</span>
+          <div style={{display:'flex',gap:2}}>{[1,2,3,4,5].map(i=><span key={i} style={{fontSize:10,color:i<=n.understanding?'#f59e0b':'#e2e8f0'}}>★</span>)}</div>
+        </div>)}
+      </>}
+
+      {/* 今日更新した用語 */}
+      {todayUpdated.length>0&&<>
+        <div style={{fontSize:12,fontWeight:700,color:'var(--navy)',marginTop:8,marginBottom:6}}>🔄 今日更新した用語</div>
+        {todayUpdated.map(n=><div key={n.id} style={{display:'flex',alignItems:'center',gap:6,padding:'5px 0',borderBottom:'1px solid #f1f5f9'}}>
+          <Badge text={n.category}/>
+          <span style={{fontSize:13,flex:1}}>{n.term||n.title}</span>
+          <div style={{display:'flex',gap:2}}>{[1,2,3,4,5].map(i=><span key={i} style={{fontSize:10,color:i<=n.understanding?'#f59e0b':'#e2e8f0'}}>★</span>)}</div>
+        </div>)}
+      </>}
+
+      {todayNotes.length===0&&todayUpdated.length===0&&<div style={{fontSize:13,color:'var(--gray)',textAlign:'center',padding:'8px 0'}}>今日はまだ用語を記録していません。ノートタブから追加しましょう 📒</div>}
+    </div>
+
+    {/* 週間グラフ */}
+    <div className="card" style={{marginBottom:12}}>
+      <div style={{fontWeight:700,fontSize:14,color:'var(--navy)',marginBottom:10}}>📈 直近7日の学習記録</div>
+      <div style={{display:'flex',alignItems:'flex-end',gap:4,height:60}}>
+        {weeklyData.map((d,i)=><div key={i} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:3}}>
+          <div style={{fontSize:10,color:'var(--gray)',fontWeight:d.label==='今日'?700:400}}>{d.count>0?d.count:''}</div>
+          <div style={{width:'100%',background:d.label==='今日'?'var(--accent)':d.count>0?'#93c5fd':'#e2e8f0',borderRadius:'3px 3px 0 0',height:`${Math.max((d.count/maxCount)*44,d.count>0?8:2)}px`,transition:'height .3s'}}/>
+          <div style={{fontSize:9,color:d.label==='今日'?'var(--accent)':'var(--gray)',fontWeight:d.label==='今日'?700:400}}>{d.label}</div>
+        </div>)}
+      </div>
+      <div style={{fontSize:11,color:'var(--gray)',marginTop:8,textAlign:'right'}}>累計 {notes.length} 用語</div>
+    </div>
+
+    {/* 統計 */}
     <div className="stat-grid">
       <div className="stat-box"><div className="stat-num">{notes.length}</div><div className="stat-label">ノート</div></div>
       <div className="stat-box"><div className="stat-num">{qa.length}</div><div className="stat-label">Q&A</div></div>
