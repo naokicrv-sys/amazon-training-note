@@ -14,7 +14,7 @@
     const overlay=document.createElement('div');
     overlay.id='pin-overlay';
     overlay.innerHTML=`<div style="position:fixed;inset:0;background:#1e3a5f;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:16px;font-family:-apple-system,sans-serif">
-      <div style="color:#fff;font-size:22px;font-weight:800;letter-spacing:1px">📋 AMAZON<br>トレーニングノート</div>
+      <div style="color:#fff;font-size:22px;font-weight:800;letter-spacing:1px">📋 トレーニングノート</div>
       <div style="color:#93c5fd;font-size:14px;margin-bottom:8px">PINを入力してください</div>
       <input id="pin-input" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]*"
         style="width:160px;padding:14px;border-radius:10px;border:2px solid #3b82f6;font-size:28px;text-align:center;letter-spacing:12px;background:#fff;color:#1e293b;outline:none"
@@ -141,7 +141,7 @@ const {useState,useEffect,useCallback,useMemo,useRef} = React;
 const CATS = ['Safety','Quality','Flow','People','数字','用語','LP','5Why','ケーススタディ','改善','朝礼','AA共有','PA連携','上司報告','振り返り回答','研修メモ'];
 const PROCESSES = ['Sort','Stow','Pick & Stage','Dispatch','RTS','Problem Solve','その他'];
 const IMPACTS = ['Safety','Quality','Delivery','Productivity','People'];
-const AI_TYPES = ['Amazon社内AI','ChatGPT','Claude','汎用AI'];
+const AI_TYPES = ['社内AI','ChatGPT','Claude','汎用AI'];
 const CONSULT_TYPES = ['現場トラブル相談','Safetyリスク整理','5Why作成','Root Cause整理','Corrective Action作成','Preventive Action作成','LPに紐づけ','振り返り文作成','上司報告文作成','PA/AAへの声かけ作成','研修回答作成','自分の理解チェック'];
 const TONES = ['やさしく','簡潔に','現場リーダー風','注意喚起強め','前向き','研修向け'];
 const TARGETS = ['全体朝礼','AA向け','PA向け','Safety向け','上司向け','新人向け'];
@@ -160,7 +160,7 @@ const PRIVACY_WARNING = `⚠️ 注意：社内AIであっても、入力でき�
 
 // ===== INITIAL SAMPLE DATA =====
 const SAMPLE_NOTES = [
-  {id:'n1',category:'数字',subcat:'Flow',term:'Volume',title:'Volume',summary:'その日に処理する荷物量',fieldMeaning:'DSではSort、Stow、Pick & Stage、Dispatch全体に影響する基準',checkPoints:'Volumeに対してHCは足りているか、Backlogが出ていないか',abnormalResponse:'遅れが出そうなら早めにPA/AMへ共有し、人員配置や優先順位を確認する',usefulPhrase:'今日のVolumeに対してHCと進捗を見ながら、Backlogが出そうな工程を早めに確認します',relatedLP:'Dive Deep,Bias for Action,Ownership',experienceNote:'',understanding:3,nextCheck:'このサイトではVolumeをどの画面・指標で確認しているか',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),favorite:false},
+  {id:'n1',category:'数字',subcat:'Flow',term:'Volume',title:'Volume',summary:'その日に処理する荷物量',fieldMeaning:'Sort、Stow、Pick & Stage、Dispatch全体に影響する基準',checkPoints:'Volumeに対してHCは足りているか、Backlogが出ていないか',abnormalResponse:'遅れが出そうなら早めにPA/AMへ共有し、人員配置や優先順位を確認する',usefulPhrase:'今日のVolumeに対してHCと進捗を見ながら、Backlogが出そうな工程を早めに確認します',relatedLP:'Dive Deep,Bias for Action,Ownership',experienceNote:'',understanding:3,nextCheck:'このサイトではVolumeをどの画面・指標で確認しているか',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),favorite:false},
   {id:'n2',category:'数字',subcat:'Flow',term:'Backlog',title:'Backlog',summary:'未処理で残っている荷物や作業',fieldMeaning:'工程が追いついていない状態を示す重要なサイン',checkPoints:'どの工程でBacklogが増えているか、Dispatchに影響するか',abnormalResponse:'原因が人員不足か、動線か、標準作業の崩れかを現場で確認し、早めにエスカレーションする',usefulPhrase:'Backlogが増えているので、どの工程で詰まりが出ているか現場を確認します',relatedLP:'Dive Deep,Bias for Action',experienceNote:'',understanding:3,nextCheck:'Backlogを確認する画面や基準値を覚える',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),favorite:false},
   {id:'n3',category:'5Why',subcat:'Safety',term:'5Why',title:'5Why（なぜなぜ分析）',summary:'なぜを重ねて根本原因を探る考え方',fieldMeaning:'事故やミスを個人責任で終わらせず、手順・環境・教育・配置などの原因を確認する',checkPoints:'誰が悪いかではなく、なぜその状況が起きたか',abnormalResponse:'事実確認を行い、Root Causeを特定し、再発防止策につなげる',usefulPhrase:'5Whyは人を責めるためではなく、なぜ起きたかを深掘りして再発防止につなげるために使うものだと思います',relatedLP:'Dive Deep,Learn and Be Curious,Insist on the Highest Standards',experienceNote:'',understanding:4,nextCheck:'実際の転倒事故や通路障害のケースで5Whyを練習する',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),favorite:true},
   {id:'n4',category:'People',subcat:'Safety',term:'人を咎めず事を正す',title:'人を咎めず事を正す',summary:'個人を責めず、起きた事実と仕組みを改善すること',fieldMeaning:'ミスをした人を責めるのではなく、なぜそうせざるを得なかったのかを確認する',checkPoints:'手順は明確だったか、教育は足りていたか、配置や環境に問題はなかったか',abnormalResponse:'感情的に叱らず、事実確認をして再発しない仕組みに変える',usefulPhrase:'人を責めるのではなく、起きた事実と原因に向き合い、再発防止につなげることが大切だと思います',relatedLP:'Earn Trust,Dive Deep,Ownership',experienceNote:'',understanding:4,nextCheck:'現場で問題が起きた時の声かけ方法を学ぶ',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),favorite:true},
@@ -168,7 +168,7 @@ const SAMPLE_NOTES = [
 ];
 
 const SAMPLE_QA = [
-  {id:'q1',question:'Volumeとは何ですか？',answer:'その日に処理する荷物量です。DSではSort、Stow、Pick & Stage、Dispatch全体に影響する基準です。',category:'数字',understanding:3,lastReviewed:null,favorite:false,relatedNoteId:'n1'},
+  {id:'q1',question:'Volumeとは何ですか？',answer:'その日に処理する荷物量です。Sort、Stow、Pick & Stage、Dispatch全体に影響する基準です。',category:'数字',understanding:3,lastReviewed:null,favorite:false,relatedNoteId:'n1'},
   {id:'q2',question:'Backlogが増えている時に最初に見るべきことは？',answer:'数字だけで判断せず、どの工程で詰まりが出ているか現場を確認します。原因がHC不足なのか、動線なのか、標準作業の崩れなのかを切り分けます。',category:'数字',understanding:3,lastReviewed:null,favorite:false,relatedNoteId:'n2'},
   {id:'q3',question:'5Whyを使う目的は？',answer:'誰が悪いかを探すためではなく、なぜ起きたかを深掘りしてRoot Causeを確認し、再発防止につなげるためです。',category:'5Why',understanding:4,lastReviewed:null,favorite:false,relatedNoteId:'n3'},
 ];
@@ -638,7 +638,7 @@ function QATab({qa,setQA,notes}){
 // ===== AI CONSULT =====
 function AIConsultTab({consults,setConsults}){
   const [step,setStep]=useState('form');// form|result
-  const [f,setF]=useState({consultType:'現場トラブル相談',targetAI:'Amazon社内AI',process:'',impacts:[],situation:'',terms:'',numbers:'',safetyRisk:'',qualityRisk:'',deliveryImpact:'',productivityImpact:'',doneActions:'',consultRequest:'',outputFormat:'1.結論 2.すぐ確認すること 3.すぐ取る行動 4.エスカレーション基準 5.再発防止策'});
+  const [f,setF]=useState({consultType:'現場トラブル相談',targetAI:'社内AI',process:'',impacts:[],situation:'',terms:'',numbers:'',safetyRisk:'',qualityRisk:'',deliveryImpact:'',productivityImpact:'',doneActions:'',consultRequest:'',outputFormat:'1.結論 2.すぐ確認すること 3.すぐ取る行動 4.エスカレーション基準 5.再発防止策'});
   const [prompt,setPrompt]=useState('');
   const [aiResponse,setAiResponse]=useState('');
   const [showWarning,setShowWarning]=useState(true);
@@ -646,13 +646,13 @@ function AIConsultTab({consults,setConsults}){
   const toggleImpact=v=>setF(p=>({...p,impacts:p.impacts.includes(v)?p.impacts.filter(x=>x!==v):[...p.impacts,v]}));
 
   const generate=()=>{
-    const p=`あなたはAmazon DSの現場改善・安全・オペレーションに詳しい業務支援AIです。
+    const p=`あなたはDSの現場改善・安全・オペレーションに詳しい業務支援AIです。
 以下の状況について、AMとして優先して確認すべき点、すぐ取るべき行動、エスカレーション基準、再発防止策を整理してください。
 
 【相談タイプ】${f.consultType}
 
 【前提】
-Amazon DSの現場で発生している事象です。安全を最優先にしながら、品質・Delivery・Productivityへの影響も考慮したいです。
+現場で発生している事象です。安全を最優先にしながら、品質・Delivery・Productivityへの影響も考慮したいです。
 
 【工程】${f.process||'（未指定）'}
 
@@ -676,7 +676,7 @@ ${f.outputFormat}`;
     setConsults(prev=>[{id:uid(),...f,generatedPrompt:p,createdAt:new Date().toISOString()},...prev]);
   };
 
-  const shortPrompt=`Amazon DSの現場相談です。
+  const shortPrompt=`現場相談です。
 工程：${f.process||'（未指定）'}
 状況：${f.situation}
 ${f.safetyRisk?`安全懸念：${f.safetyRisk}\n`:''}${f.doneActions?`対応済み：${f.doneActions}\n`:''}
@@ -1264,7 +1264,7 @@ function SettingsTab({notes,qa,phrases,fivewhys,improvements,reflections,setNote
       <div className="card-title">ℹ️ このアプリについて</div>
       <div style={{fontSize:13,color:'#475569',lineHeight:1.7}}>
         <strong>トレーニングノート</strong><br/>
-        Amazon DSで働く新任エリアマネージャーのための学習・実務支援ツール。<br/>
+        新任エリアマネージャーのための学習・実務支援ツール。<br/>
         データはすべてブラウザのlocalStorageに保存されます。<br/><br/>
         <strong>使い始め方：</strong><br/>
         1. ノートタブで用語・学びを記録<br/>
@@ -1294,8 +1294,8 @@ const OLP_DATA=[
   {id:'olp12',name:'Dive Deep',jp:'ダイブディープ',tagline:'リーダーは常にすべての階層の業務に気を配り、詳細な点についても把握します。頻繁に現状を検証します',detail:'リーダーは常にすべての階層の業務に気を配り、詳細な点についても把握します。頻繁に現状を検証し、指標と個別の事例が合致していないときには疑問を呈します。リーダーが関わるに値しない業務はありません。',dsExample:'「Backlogが増えている」という数字だけでなく、「どの工程で・なぜ」まで現場で確認する。5Whyの基礎。',keywords:['現場確認','事実ベース','深掘り'],color:'1d4ed8'},
   {id:'olp13',name:'Have Backbone; Disagree and Commit',jp:'バックボーンを持つ・異議を唱え、コミットする',tagline:'リーダーは同意できない場合には、敬意をもって異議を唱えなければなりません。いざ決定がなされたら、全面的にコミットして取り組みます',detail:'リーダーは同意できない場合には、敬意をもって異議を唱えなければなりません。たとえそうすることが面倒で労力を要することであっても、例外はありません。リーダーは、信念を持ち、容易にあきらめません。安易に妥協して馴れ合うことはしません。しかし、いざ決定がなされたら、全面的にコミットして取り組みます。',dsExample:'上司の指示に疑問があれば根拠を持って意見を言う。しかし決定後は全力でコミットし、チームに伝える。',keywords:['誠実','意見表明','コミット'],color:'dc2626'},
   {id:'olp14',name:'Deliver Results',jp:'デリバーリザルツ',tagline:'リーダーはビジネス上の重要なインプットにフォーカスし、適正な品質でタイムリーにやり遂げます',detail:'リーダーはビジネス上の重要なインプットにフォーカスし、適正な品質でタイムリーにやり遂げます。どのようなハードルに直面しても、立ち向かい、決して妥協しません。',dsExample:'1日の終わりにVolumeを処理してDispatchに間に合わせること。数字で結果を示し、振り返りで次に活かす。',keywords:['成果','達成','粘り強さ'],color:'059669'},
-  {id:'olp15',name:"Strive to be Earth's Best Employer",jp:'ストライブトゥビーアースベストエンプロイヤー',tagline:'リーダーは職場環境をより安全に、より生産的に、より多様かつ公正にするべく、日々取り組みます',detail:'リーダーは、職場環境をより安全に、より生産的に、より実力が発揮しやすく、より多様かつ公正にするべく、日々取り組みます。リーダーは共感を持ち、自ら仕事を楽しみ、そして誰もが仕事を楽しめるようにします。リーダーは自分自身に問いかけます。私の同僚は成長しているか？　十分な裁量を与えられているか？　彼らは次に進む準備ができているか？　リーダーは、社員個人の成功に対し（それがAmazonであっても、他の場所であっても）、ビジョンと責任を持ちます。',dsExample:'AAが「困ったことを言いやすい」現場を作ること。ミスを責めず成長を支援する声かけ。多様な背景を持つAAが活躍できる環境整備。',keywords:['心理的安全性','多様性','職場環境'],color:'db2777'},
-  {id:'olp16',name:'Success and Scale Bring Broad Responsibility',jp:'サクセスアンドスケールブリングブロードリスポンシビリティ',tagline:'リーダーは消費する以上に創造し、常に物事をより良い方向へと導きます',detail:'Amazonはガレージで創業して以来、成長を遂げてきました。現在、私たちの規模は大きく、世界に影響力を持ち、そしていまだに、完璧には程遠い存在です。私たちは、自分たちの行動がもたらす二次的な影響にも、謙虚で思慮深くありたいと思います。私たちは、社会、地球、そして未来の世代のために、日々成長し続ける必要があります。一日のはじめに、お客様、社員、パートナー企業、そして社会全体のために、より良いものを作り、より良い行動を取り、より良い企業になるという決意を新たにします。そして、明日はもっと良くできると信じて一日を終えます。リーダーは消費する以上に創造し、常に物事をより良い方向へと導きます。',dsExample:'DSの運営が地域コミュニティ・環境・従業員の生活に与える影響を意識する。小さな改善の積み重ねが大きな変化になる。',keywords:['責任','社会的影響','謙虚さ'],color:'475569'},
+  {id:'olp15',name:"Strive to be Earth's Best Employer",jp:'ストライブトゥビーアースベストエンプロイヤー',tagline:'リーダーは職場環境をより安全に、より生産的に、より多様かつ公正にするべく、日々取り組みます',detail:'リーダーは、職場環境をより安全に、より生産的に、より実力が発揮しやすく、より多様かつ公正にするべく、日々取り組みます。リーダーは共感を持ち、自ら仕事を楽しみ、そして誰もが仕事を楽しめるようにします。リーダーは自分自身に問いかけます。私の同僚は成長しているか？　十分な裁量を与えられているか？　彼らは次に進む準備ができているか？　リーダーは、社員個人の成功に対し（当社であっても、他の場所であっても）、ビジョンと責任を持ちます。',dsExample:'AAが「困ったことを言いやすい」現場を作ること。ミスを責めず成長を支援する声かけ。多様な背景を持つAAが活躍できる環境整備。',keywords:['心理的安全性','多様性','職場環境'],color:'db2777'},
+  {id:'olp16',name:'Success and Scale Bring Broad Responsibility',jp:'サクセスアンドスケールブリングブロードリスポンシビリティ',tagline:'リーダーは消費する以上に創造し、常に物事をより良い方向へと導きます',detail:'当社はガレージで創業して以来、成長を遂げてきました。現在、私たちの規模は大きく、世界に影響力を持ち、そしていまだに、完璧には程遠い存在です。私たちは、自分たちの行動がもたらす二次的な影響にも、謙虚で思慮深くありたいと思います。私たちは、社会、地球、そして未来の世代のために、日々成長し続ける必要があります。一日のはじめに、お客様、社員、パートナー企業、そして社会全体のために、より良いものを作り、より良い行動を取り、より良い企業になるという決意を新たにします。そして、明日はもっと良くできると信じて一日を終えます。リーダーは消費する以上に創造し、常に物事をより良い方向へと導きます。',dsExample:'現場の運営が地域コミュニティ・環境・従業員の生活に与える影響を意識する。小さな改善の積み重ねが大きな変化になる。',keywords:['責任','社会的影響','謙虚さ'],color:'475569'},
 ];
 
 // ===== OLP TAB =====
@@ -1349,7 +1349,7 @@ function OLPTab(){
           </div>
         </div>
         <div style={{background:'rgba(16,185,129,.1)',borderRadius:10,padding:12,marginBottom:24,border:'1px solid #10b98130'}}>
-          <div style={{fontSize:11,color:'#34d399',fontWeight:700,marginBottom:4}}>🏭 DSでの実践</div>
+          <div style={{fontSize:11,color:'#34d399',fontWeight:700,marginBottom:4}}>🏭 現場での実践</div>
           <div style={{fontSize:12,color:'#a7f3d0',lineHeight:1.6}}>{olp.dsExample}</div>
         </div>
         <div style={{display:'flex',gap:10,justifyContent:'center',marginBottom:16}}>
@@ -1376,7 +1376,7 @@ function OLPTab(){
   if(selected) return <div className="page">
     <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
       <button className="btn btn-gray btn-sm" onClick={()=>setSelected(null)}>← 戻る</button>
-      <CopyBtn text={`【${selected.name}】${selected.jp}\n\n${selected.tagline}\n\n${selected.detail}\n\n【DSでの実践例】${selected.dsExample}`} label="コピー"/>
+      <CopyBtn text={`【${selected.name}】${selected.jp}\n\n${selected.tagline}\n\n${selected.detail}\n\n【現場での実践例】${selected.dsExample}`} label="コピー"/>
     </div>
     <div className="card" style={{borderTop:`4px solid #${selected.color}`}}>
       <div style={{display:'inline-block',background:`#${selected.color}20`,border:`1px solid #${selected.color}`,borderRadius:6,padding:'2px 10px',fontSize:12,fontWeight:700,color:`#${selected.color}`,marginBottom:8}}>{selected.keywords.join(' / ')}</div>
@@ -1387,7 +1387,7 @@ function OLPTab(){
       </div>
       <div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginBottom:4}}>📖 意味</div>
       <div style={{fontSize:13,lineHeight:1.7,color:'#374151',marginBottom:12}}>{selected.detail}</div>
-      <div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginBottom:4}}>🏭 DSでの実践例</div>
+      <div style={{fontSize:12,fontWeight:700,color:'var(--gray)',marginBottom:4}}>🏭 現場での実践例</div>
       <div style={{background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:8,padding:'10px 12px',fontSize:13,lineHeight:1.7,color:'#065f46'}}>{selected.dsExample}</div>
     </div>
     <div className="card">
@@ -1395,7 +1395,7 @@ function OLPTab(){
       <div className="note-phrase">「{selected.tagline}」</div>
       <div style={{marginTop:6,display:'flex',gap:6}}>
         <CopyBtn text={selected.tagline} label="タグライン"/>
-        <CopyBtn text={`${selected.name}（${selected.jp}）：${selected.dsExample}`} label="DS実践例"/>
+        <CopyBtn text={`${selected.name}（${selected.jp}）：${selected.dsExample}`} label="現場実践例"/>
       </div>
     </div>
   </div>;
@@ -1412,7 +1412,7 @@ function OLPTab(){
         📢 声出しモード開始
       </button>
     </div>
-    <div className="alert alert-info" style={{marginBottom:12}}>全16のOLPはAmazonの行動・判断の基準です。ノート・5Why・改善の際に関連するOLPを意識しましょう。</div>
+    <div className="alert alert-info" style={{marginBottom:12}}>全16のOLPは行動・判断の基準です。ノート・5Why・改善の際に関連するOLPを意識しましょう。</div>
     <div className="search-box" style={{marginBottom:12}}>
       <span className="search-icon">🔍</span>
       <input placeholder="キーワード検索..." value={filter} onChange={e=>setFilter(e.target.value)}/>
